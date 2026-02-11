@@ -8,7 +8,7 @@ class Department(models.Model):
     reward_points = models.IntegerField(default=0)  
     
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name}"   
 
 class Branch(models.Model):
     name = models.CharField(max_length=100, unique=True)
