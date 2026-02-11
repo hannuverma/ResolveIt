@@ -11,7 +11,6 @@ const StudentDashboard = () => {
 	const [selectedComplaint, setSelectedComplaint] = useState(null);
 
 	const [formData, setFormData] = useState({
-		title: "",
 		description: "",
 		department: "",
 		image: null,
@@ -69,7 +68,6 @@ const StudentDashboard = () => {
 
 		try {
 			const formDataToSend = new FormData();
-			formDataToSend.append("title", formData.title);
 			formDataToSend.append("description", formData.description);
 			if (formData.department) {
 				formDataToSend.append("department", formData.department);
@@ -92,7 +90,6 @@ const StudentDashboard = () => {
 				"Complaint submitted successfully! We will review it shortly.",
 			);
 			setFormData({
-				title: "",
 				description: "",
 				department: "",
 				image: null,
@@ -129,7 +126,7 @@ const StudentDashboard = () => {
 				`/api/complaints/${selectedComplaint.id}/feedback/`,
 				{
 					rating: feedbackData.rating,
-					comment: feedbackData.comment,
+					review: feedbackData.review,
 				},
 			);
 
@@ -256,30 +253,6 @@ const StudentDashboard = () => {
 							onSubmit={handleSubmitComplaint}
 							className='space-y-6'
 						>
-							{/* Title Field */}
-							<div>
-								<label
-									htmlFor='title'
-									className='block text-sm font-semibold text-gray-700 mb-2'
-								>
-									Complaint Title{" "}
-									<span className='text-red-500'>*</span>
-								</label>
-								<input
-									type='text'
-									id='title'
-									name='title'
-									value={formData.title}
-									onChange={handleInputChange}
-									required
-									placeholder='Brief summary of your complaint'
-									className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-black placeholder-gray-400'
-									maxLength={150}
-								/>
-								<p className='text-xs text-gray-500 mt-1'>
-									{formData.title.length}/150 characters
-								</p>
-							</div>
 
 							{/* Description Field */}
 							<div>
@@ -619,7 +592,7 @@ const StudentDashboard = () => {
 													Your Feedback
 												</p>
 												<p className='text-gray-700'>
-													{complaint.feedback.comment}
+													{complaint.feedback.review}
 												</p>
 												<p className='text-xs text-gray-500 mt-2'>
 													Rating:{" "}
@@ -675,21 +648,21 @@ const StudentDashboard = () => {
 									</div>
 								</div>
 
-								{/* Comment */}
+								{/* review */}
 								<div>
 									<label
-										htmlFor='feedback-comment'
+										htmlFor='feedback-review'
 										className='block text-sm font-semibold text-gray-700 mb-2'
 									>
-										Your Comment
+										Your Review
 									</label>
 									<textarea
-										id='feedback-comment'
-										value={feedbackData.comment}
+										id='feedback-review'
+										value={feedbackData.review}
 										onChange={(e) =>
 											setFeedbackData((prev) => ({
 												...prev,
-												comment: e.target.value,
+												review: e.target.value,
 											}))
 										}
 										placeholder='Share your thoughts...'
