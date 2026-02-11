@@ -1,38 +1,39 @@
-import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Login from "./pages/Login.jsx"
-import StudentDashboard from "./pages/StudentDashboard.jsx"
-import AdminDashboard from "./pages/AdminDashboard.jsx"
-import ProtectedRoute from './components/ProtectedRoutes'
-import NotFound from './pages/NotFound.jsx'
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Login from "./pages/Login.jsx";
+import StudentDashboard from "./pages/StudentDashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
+import ProtectedRoute from "./components/ProtectedRoutes";
+import NotFound from "./pages/NotFound.jsx";
 
 const App = () => {
-  return (
+	return (
 		<>
 			<BrowserRouter>
 				<Routes>
 					<Route element={<Login />} path='/login' />
 					<Route
-            path='/'
+						path='/'
 						element={
 							<ProtectedRoute>
 								<StudentDashboard />
 							</ProtectedRoute>
 						}
 					/>
+					<Route path="/studentDashboard" element={<StudentDashboard />} />
 					<Route
-            path='/admin'
+						path='/admin'
 						element={
 							<ProtectedRoute>
 								<AdminDashboard />
 							</ProtectedRoute>
 						}
 					/>
-          <Route path='*' element={<NotFound/>}/>
+					<Route path='*' element={<NotFound />} />
 				</Routes>
 			</BrowserRouter>
 		</>
-  );
-}
+	);
+};
 
-export default App
+export default App;
