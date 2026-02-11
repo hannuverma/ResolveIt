@@ -15,7 +15,8 @@ from datetime import timedelta
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+# The URL prefix for media files
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -158,6 +159,15 @@ USE_I18N = True
 
 USE_TZ = True
 
+# settings.py
+
+# Keep MEDIA_URL as is
+MEDIA_URL = '/media/'
+
+# Change MEDIA_ROOT to this to ensure it's at the project root
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Optional: Add this to verify in your terminal every time the server starts
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
