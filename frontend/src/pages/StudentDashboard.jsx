@@ -273,7 +273,7 @@ const StudentDashboard = () => {
 									onChange={handleInputChange}
 									required
 									placeholder='Brief summary of your complaint'
-									className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all'
+									className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-black placeholder-gray-400'
 									maxLength={150}
 								/>
 								<p className='text-xs text-gray-500 mt-1'>
@@ -298,7 +298,7 @@ const StudentDashboard = () => {
 									required
 									placeholder='Provide detailed information about your complaint...'
 									rows='6'
-									className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none'
+									className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-black placeholder-gray-400 resize-none'
 									maxLength={2000}
 								/>
 								<p className='text-xs text-gray-500 mt-1'>
@@ -323,7 +323,7 @@ const StudentDashboard = () => {
 									name='department'
 									value={formData.department}
 									onChange={handleInputChange}
-									className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all'
+									className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-black placeholder-gray-400'
 								>
 									<option value=''>
 										Select a department (optional)
@@ -694,7 +694,7 @@ const StudentDashboard = () => {
 										}
 										placeholder='Share your thoughts...'
 										rows='4'
-										className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all resize-none'
+										className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all text-black placeholder-gray-400 resize-none'
 									/>
 								</div>
 
