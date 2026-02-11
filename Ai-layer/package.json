@@ -1,0 +1,11 @@
+{
+  "name": "ai-layer",
+  "version": "1.0.0",
+  "description": "the ai layer that will detect department and much more for our project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

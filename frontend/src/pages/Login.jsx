@@ -6,7 +6,7 @@ import Logo from "../assets/images/logo.png";
 
 const Login = () => {
 	const [formData, setFormData] = useState({
-		email: "",
+		username: "",
 		password: "",
 	});
 	const [loading, setLoading] = useState(false);
@@ -30,12 +30,12 @@ const Login = () => {
 
 		try {
 			const response = await api.post("/api/token/", {
-				email: formData.email,
+				username: formData.username,
 				password: formData.password,
 			});
 
 			setSuccess("Login successful!");
-			setFormData({ email: "", password: "" });
+			setFormData({ username: "", password: "" });
 			console.log("Login response:", response.data);
       localStorage.setItem(ACCESS_TOKEN, response.data.access);
       localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
@@ -89,19 +89,19 @@ const Login = () => {
 					)}
 
 					<form onSubmit={handleSubmit} className='space-y-5'>
-						{/* Email Input */}
+						{/* username Input */}
 						<div>
 							<label
-								htmlFor='email'
+								htmlFor='username'
 								className='block text-sm font-semibold text-gray-700 mb-2'
 							>
-								Email Address
+								username Address
 							</label>
 							<input
-								type='email'
-								id='email'
-								name='email'
-								value={formData.email}
+								type='username'
+								id='username'
+								name='username'
+								value={formData.username}
 								onChange={handleChange}
 								required
 								placeholder='you@example.com'
