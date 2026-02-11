@@ -37,6 +37,7 @@ class StudentGridSerializer(serializers.ModelSerializer):
         return user
 
 class ComplaintSerializer(serializers.ModelSerializer):
+    assigned_department = serializers.StringRelatedField()
     class Meta:
         model = Complaint
         fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title']

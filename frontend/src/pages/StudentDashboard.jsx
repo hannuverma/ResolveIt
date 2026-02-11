@@ -255,7 +255,6 @@ const StudentDashboard = () => {
 							onSubmit={handleSubmitComplaint}
 							className='space-y-6'
 						>
-
 							{/* Description Field */}
 							<div>
 								<label
@@ -516,7 +515,10 @@ const StudentDashboard = () => {
 												</span>
 											</div>
 										</div>
-
+										{console.log(
+											"Complaint Data:",
+											complaint,
+										)}
 										{/* Image if available */}
 										{complaint.image && (
 											<div className='mb-4'>
@@ -530,13 +532,15 @@ const StudentDashboard = () => {
 
 										{/* Details */}
 										<div className='grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm'>
-											{complaint.department && (
+											{complaint.assigned_department && (
 												<div>
 													<p className='text-gray-500 text-xs font-medium'>
 														DEPARTMENT
 													</p>
 													<p className='text-gray-700 font-semibold capitalize'>
-														{complaint.department}
+														{
+															complaint.assigned_department
+														}
 													</p>
 												</div>
 											)}
@@ -565,7 +569,7 @@ const StudentDashboard = () => {
 										</div>
 
 										{/* Feedback Section */}
-										{complaint.status === "resolved" &&
+										{complaint.status === "RESOLVED" &&
 										!complaint.feedback ? (
 											<button
 												onClick={() =>
