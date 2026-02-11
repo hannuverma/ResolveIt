@@ -554,14 +554,14 @@ const StudentDashboard = () => {
 													).toLocaleDateString()}
 												</p>
 											</div>
-											{complaint.updated_at && (
+											{complaint.resolved_at && (
 												<div>
 													<p className='text-gray-500 text-xs font-medium'>
-														UPDATED
+														RESOLVED
 													</p>
 													<p className='text-gray-700 font-semibold'>
 														{new Date(
-															complaint.updated_at,
+															complaint.resolved_at,
 														).toLocaleDateString()}
 													</p>
 												</div>

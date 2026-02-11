@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.decorators import api_view
@@ -51,12 +52,12 @@ class ComplaintViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Students should only see their own complaints
         if self.request.user.role == 'STUDENT':
             return Complaint.objects.filter(student=self.request.user)
         # Dept staff should see complaints assigned to them
         elif self.request.user.role == 'DEPT':
             return Complaint.objects.filter(assigned_department=self.request.user.department)
+        
         return super().get_queryset()
 
     def perform_create(self, serializer):

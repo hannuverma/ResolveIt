@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
@@ -50,6 +51,15 @@ class Complaint(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=10, choices=[('LOW', 'Low'), ('MEDIUM', 'Medium'), ('HIGH', 'High')], default='MEDIUM')
+
+    def save(self, *args, **kwargs):
+        if self.status == self.Status.RESOLVED and self.resolved_at is None:
+            self.resolved_at = timezone.now()
+
+        elif self.status != 'RESOLVED':
+            self.resolved_at = None
+        super().save(*args, **kwargs)
+        
 
     def __str__(self):
         return f"Complaint #{self.id} - {self.status}"
