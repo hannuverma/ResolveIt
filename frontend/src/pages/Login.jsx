@@ -5,6 +5,7 @@ import Logo from "../assets/images/logo.png";
 
 
 const Login = () => {
+  const navigate = useNavigate();
 	const [formData, setFormData] = useState({
 		username: "",
 		password: "",
@@ -39,6 +40,7 @@ const Login = () => {
 			console.log("Login response:", response.data);
       localStorage.setItem(ACCESS_TOKEN, response.data.access);
       localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
+      navigate("/");
 		} catch (err) {
 			setError(
 				err.response?.data?.detail || "Login failed. Please try again.",
