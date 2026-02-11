@@ -47,5 +47,5 @@ class ComplaintSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['id', 'complaint', 'rating', 'comments']
+        fields = ['id', 'complaint', 'rating', 'review_text']
         read_only_fields = ['id', 'complaint']
