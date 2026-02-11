@@ -21,6 +21,7 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -59,7 +60,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "corsheaders",
 ]
-
+AUTH_USER_MODEL = 'api.User'
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -106,10 +107,23 @@ WSGI_APPLICATION = "backend.wsgi.application"
 #     }
 # }
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
+
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres.skocgaosaosdsnhztocx", # CHECK THIS in your 'Connect' popup!
+        "PASSWORD": "ResolveIt@312",
+        "HOST": "aws-1-ap-northeast-1.pooler.supabase.com", # Use the pooler host!
+        "PORT": "6543", # The pooler usually uses 6543 instead of 5432
+        "pool_mode": "transaction", # Use transaction pooling for better performance
     }
 }
 
