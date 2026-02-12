@@ -15,6 +15,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets, status
 from .services import add_department_points, apply_unresolved_penalties, process_complaint_rating
+from rest_framework.decorators import api_view
+import requests
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -108,14 +110,34 @@ class ComplaintViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # 1. Get the uploaded data
         img = self.request.FILES.get('image')
-        desc = self.request.data.get('description')
-        title = "hello"
+        description = self.request.data.get('description')
+
         # 2. Run AI to get the department name
-        dept_name = "Electrical"
+        try:
+            ai_response = requests.post(
+                "http://127.0.0.1:8000/api/analyze_complaint/",
+                json={"description": description,},
+                timeout=5
+            )
+            ai_response.raise_for_status()
 
-        # 3. Find the Department object in your DB
-        # Use get_or_create so the app doesn't crash if the AI picks a new category
-        dept, created = Department.objects.get_or_create(name=dept_name)
+            dept_name = ai_response.json().get("department")
+            title = ai_response.json().get("title")
+            priority = ai_response.json().get("priority")
 
-        # 4. Save the complaint with the student and the AI-assigned department
-        serializer.save(student=self.request.user, assigned_department=dept)
+        except requests.RequestException:
+            dept_name = None  # AI failed
+
+        # 2️⃣ Get or create department
+        department = None
+        if dept_name:
+            department, _ = Department.objects.get_or_create(name=dept_name)
+
+        # 3️⃣ Save complaint properly
+        serializer.save(
+            student=self.request.user,
+            assigned_department=department,
+            title=title,
+            priority=priority,
+            status=Complaint.Status.IN_PROGRESS if department else Complaint.Status.PENDING
+        )

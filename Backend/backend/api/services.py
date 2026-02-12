@@ -5,6 +5,9 @@ from django.utils import timezone
 from django.db.models import F
 import math
 from .models import DepartmentPointTransaction, Complaint
+import requests
+from django.conf import settings
+
 
 
 @transaction.atomic
