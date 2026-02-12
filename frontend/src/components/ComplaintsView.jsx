@@ -206,7 +206,7 @@ const ComplaintsView = () => {
 										Your Feedback
 									</p>
 									<p className='text-gray-700'>
-										{complaint.feedback.review}
+										{complaint.feedback.review_text}
 									</p>
 									<p className='text-xs text-gray-500 mt-2'>
 										Rating: {complaint.feedback.rating}
