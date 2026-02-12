@@ -35,18 +35,21 @@ class StudentGridSerializer(serializers.ModelSerializer):
         user.save()
 
         return user
-
-class ComplaintSerializer(serializers.ModelSerializer):
-    assigned_department = serializers.StringRelatedField()
-    image = serializers.ImageField(max_length=None, use_url=True)
-    class Meta:
-        model = Complaint
-        fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title']
-        read_only_fields = ['id', 'student', 'created_at']
-
+    
 
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = ['id', 'complaint', 'rating', 'review_text']
         read_only_fields = ['id', 'complaint']
+
+class ComplaintSerializer(serializers.ModelSerializer):
+    assigned_department = serializers.StringRelatedField()
+    image = serializers.ImageField(max_length=None, use_url=True)
+    feedback = FeedbackSerializer(read_only=True)
+    class Meta:
+        model = Complaint
+        fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title','feedback']
+        read_only_fields = ['id', 'student', 'created_at']
+
+
