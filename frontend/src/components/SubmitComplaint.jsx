@@ -184,7 +184,7 @@ const SubmitComplaint = ({setError, setSuccess}) => {
                 <p className="text-gray-400 text-sm mb-3">or click to browse</p>
                 <input 
                   type="file" id="cameraInput" accept="image/*" 
-                  capture="environment" className="hidden" onChange={handleImageChange} 
+                  capture="environment" onChange={handleImageChange} 
                 />
                 <input 
                   type="file" id="galleryInput" accept="image/*" 
