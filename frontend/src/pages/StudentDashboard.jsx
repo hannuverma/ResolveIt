@@ -10,15 +10,6 @@ const StudentDashboard = () => {
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const [selectedComplaint, setSelectedComplaint] = useState(null);
 
-
-	const [feedbackData, setFeedbackData] = useState({
-		rating: 5,
-		comment: "",
-	});
-
-	
-	
-
 	return (
 		<div
 			id='studentDash'
@@ -102,17 +93,26 @@ const StudentDashboard = () => {
 				</div>
 
 				{/* Tab Content */}
-				{activeTab === "submit" && (
-					<SubmitComplaint/>
-				)}
+				{activeTab === "submit" && <SubmitComplaint />}
 
 				{activeTab === "history" && (
-					<ComplaintsView/>
-				)}
+					<>
+						<ComplaintsView
+							setShowFeedbackModal={setShowFeedbackModal}
+							setSelectedComplaint={setSelectedComplaint}
+						/>
 
-				{/* Feedback Modal */}
-				{showFeedbackModal && selectedComplaint && (
-					<FeedbackForm/>
+						{/* Feedback Form - Displayed as a regular component */}
+						{showFeedbackModal && selectedComplaint && (
+							<div className='mt-8 flex justify-center'>
+								<FeedbackForm
+									setSuccess={setSuccess}
+									selectedComplaint={selectedComplaint}
+									setShowFeedbackModal={setShowFeedbackModal}
+								/>
+							</div>
+						)}
+					</>
 				)}
 
 				{/* Sustainability Footer */}

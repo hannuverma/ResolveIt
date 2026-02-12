@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import api from "../utils/api";
 
 
-const ComplaintsView = () => {
+const ComplaintsView = ({setShowFeedbackModal, setSelectedComplaint}) => {
 	const [complaints, setComplaints] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
-	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
-	const [selectedComplaint, setSelectedComplaint] = useState(null);
 	// Fetch complaints on component mount
 	useEffect(() => {
 		fetchComplaints();
@@ -29,7 +27,7 @@ const ComplaintsView = () => {
 	const openFeedbackModal = (complaint) => {
 		setSelectedComplaint(complaint);
 		setShowFeedbackModal(true);
-		setFeedbackData({ rating: 5, comment: "" });
+		// setFeedbackData({ rating: 5, comment: "" });
 	};
 	const getStatusColor = (status) => {
 		status = status.toLowerCase();
