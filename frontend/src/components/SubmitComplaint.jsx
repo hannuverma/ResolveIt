@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../utils/api";
 
-const SubmitComplaint = () => {
+const SubmitComplaint = ({setError, setSuccess}) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     description: "",
@@ -61,10 +61,6 @@ const SubmitComplaint = () => {
         imagePreview: null,
       });
 
-      // Refresh complaints list
-      setTimeout(() => {
-        fetchComplaints();
-      }, 1500);
     } catch (err) {
       setError(
         err.response?.data?.detail ||

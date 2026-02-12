@@ -93,7 +93,7 @@ const StudentDashboard = () => {
 				</div>
 
 				{/* Tab Content */}
-				{activeTab === "submit" && <SubmitComplaint />}
+				{activeTab === "submit" && <SubmitComplaint setError={setError} setSuccess={setSuccess} />}
 
 				{activeTab === "history" && (
 					<>
