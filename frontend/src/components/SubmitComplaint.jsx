@@ -188,7 +188,7 @@ const SubmitComplaint = ({setError, setSuccess}) => {
                   accept="image/*"
                   capture="environment"
                   onChange={handleImageChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className="hidden"
                 />
 
                 <input
@@ -196,7 +196,7 @@ const SubmitComplaint = ({setError, setSuccess}) => {
                   id="galleryInput"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                  className="hidden"
                 />
 
                 <div className="flex gap-3 justify-center">
