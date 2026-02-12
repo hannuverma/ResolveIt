@@ -44,7 +44,7 @@ class Complaint(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='complaints')
     title = models.CharField(max_length=200, default='No Title', blank=True)
 
-    image = models.ImageField(upload_to='complaints/')
+    image = models.ImageField(upload_to='complaints')
     description = models.TextField()
     assigned_department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name='tasks')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
