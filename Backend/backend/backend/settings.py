@@ -15,6 +15,17 @@ from datetime import timedelta
 from dotenv import load_dotenv
 import os
 
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': 'dwe6n6goq',
+    'API_KEY': '786111112512728',
+    'API_SECRET': '6G9GDXuSX_11dpt5mHHK9HWnBjI',
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 # The URL prefix for media files
 
 
@@ -60,6 +71,8 @@ INSTALLED_APPS = [
     "api",
     "rest_framework",
     "corsheaders",
+    "cloudinary",
+    "cloudinary_storage",
 ]
 
 
@@ -165,12 +178,6 @@ USE_I18N = True
 USE_TZ = True
 
 # settings.py
-
-# Keep MEDIA_URL as is
-MEDIA_URL = '/media/'
-
-# Change MEDIA_ROOT to this to ensure it's at the project root
-MEDIA_ROOT = BASE_DIR / 'media'
 
 # Optional: Add this to verify in your terminal every time the server starts
 
