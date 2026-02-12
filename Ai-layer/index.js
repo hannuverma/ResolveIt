@@ -22,6 +22,7 @@ async function callModel(state) {
 	try {
 		return JSON.parse(response.content);
 	} catch (err) {
+		console.log("Error parsing AI response, returning default value", err);
 		return {
 			title: "Unclassified Issue",
 			category: "Infrastructure",
