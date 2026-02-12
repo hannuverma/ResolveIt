@@ -73,18 +73,27 @@ class Feedback(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-
         super().save(*args, **kwargs)
-        
-        dept = self.complaint.assigned_department
-        if dept:
-            if self.rating >= 4:
-                dept.reward_points += 10
-            elif self.rating == 3:
-                dept.reward_points += 5
-            else:
-                dept.reward_points -= 5
-            dept.save()
+
 
     def __str__(self):
         return f"Rating: {self.rating} stars for Complaint #{self.complaint.id}"
+    
+class DepartmentPointTransaction(models.Model):
+
+    TRANSACTION_TYPES = [
+        ("RESOLVE", "Complaint Resolved"),
+        ("REVIEW", "Review Rating"),
+        ("PENALTY", "Penalty"),
+        ("SPEED", "Speed Bonus")
+    ]
+
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, null=True, blank=True)
+    points = models.IntegerField()
+    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
+    penalty_day = models.IntegerField(null=True, blank=True)
+    alloted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.transaction_type} - {self.points} points for {self.department.name}"
