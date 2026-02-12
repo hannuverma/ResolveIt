@@ -108,36 +108,47 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         return super().get_queryset()
 
     def perform_create(self, serializer):
-        # 1. Get the uploaded data
+
         img = self.request.FILES.get('image')
         description = self.request.data.get('description')
 
-        # 2. Run AI to get the department name
+        # ✅ Always initialize variables first
+        dept_name = None
+        title = None
+        priority = None
+        department = None
+
         try:
             ai_response = requests.post(
-                "http://127.0.0.1:8000/api/analyze_complaint/",
-                json={"description": description,},
+                "http://localhost:4000/api/analyze_complaint/",
+                json={"description": description},
                 timeout=5
             )
             ai_response.raise_for_status()
 
-            dept_name = ai_response.json().get("department")
-            title = ai_response.json().get("title")
-            priority = ai_response.json().get("priority")
+            data = ai_response.json()
+
+            dept_name = data.get("department")
+            title = data.get("title")
+            priority = data.get("priority")
 
         except requests.RequestException:
-            dept_name = None  # AI failed
+            print("AI request failed")
 
-        # 2️⃣ Get or create department
-        department = None
+        # Get or create department safely
         if dept_name:
             department, _ = Department.objects.get_or_create(name=dept_name)
 
-        # 3️⃣ Save complaint properly
+
+        if not priority:
+            priority = "MEDIUM"
+
+
         serializer.save(
             student=self.request.user,
             assigned_department=department,
             title=title,
             priority=priority,
-            status=Complaint.Status.IN_PROGRESS if department else Complaint.Status.PENDING
+            status=Complaint.Status.PENDING if department else Complaint.Status.PENDING
         )
+

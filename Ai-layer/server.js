@@ -8,9 +8,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 app.post("/api/analyze_complaint/", async (req, res) => {
-	const { discription } = req.body;
+	const { description } = req.body;
 	const AIresponse = await callModel({
-		messages: [{ role: "user", content: discription }],
+		messages: [{ role: "user", content: description }],
 	});
 	res.json(AIresponse);
 });
