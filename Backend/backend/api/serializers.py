@@ -52,7 +52,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
     feedback = FeedbackSerializer(read_only=True)
     class Meta:
         model = Complaint
-        fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title','feedback']
+        fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback']
         read_only_fields = ['id', 'student', 'created_at']
 
 
