@@ -35,7 +35,7 @@ const FeedbackForm = ({
 	};
 
 	return (
-		<div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8'>
+		<div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50'>
 			<div className='flex justify-between items-center mb-6'>
 				<div>
 					<h2 className='text-2xl font-bold text-gray-800 mb-2'>
