@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Complaint, Feedback, Department
+from .models import User, Complaint, Feedback, Department, DepartmentPointTransaction
 
 
 class departmentSerializer(serializers.ModelSerializer):
@@ -21,7 +21,8 @@ class StudentGridSerializer(serializers.ModelSerializer):
             'department',
             'is_active',
             'branch',
-            'password'
+            'password',
+            'role',
         ]
         read_only_fields = ['id']
         extra_kwargs = {
@@ -55,3 +56,25 @@ class ComplaintSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'student', 'created_at']
 
 
+class DepartmentPointTransactionSerializer(serializers.ModelSerializer):
+    department = serializers.StringRelatedField()
+    complaint = ComplaintSerializer(read_only=True)
+
+    class Meta:
+        model = DepartmentPointTransaction
+        fields = [
+            'id',
+            'department',
+            'complaint',
+            'points',
+            'transaction_type',
+            'alloted_at',
+        ]
+        read_only_fields = [
+            'id',
+            'department',
+            'complaint',
+            'points',
+            'transaction_type',
+            'alloted_at',
+        ]

@@ -14,6 +14,7 @@ from .models import User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets, status
+from .services import add_department_points, apply_unresolved_penalties, process_complaint_rating
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -21,7 +22,13 @@ class CreateUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
+@api_view(['POST'])
+def run_daily_penalties(request):
+    apply_unresolved_penalties()
+    return Response({"message": "Penalties applied"})
 
+
+@api_view(['POST'])
 def loginUser(request):
     data = request.data
     email = data.get('email')
@@ -64,11 +71,18 @@ def handle_feedback(request, complaint_id):
             complaint = Complaint.objects.get(id=complaint_id)
         except Complaint.DoesNotExist:
             return Response({'error': 'Complaint not found'}, status=status.HTTP_404_NOT_FOUND)
+        if complaint.status != 'RESOLVED':
+            return Response({'error': 'Feedback can only be submitted for resolved complaints'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if Feedback.objects.filter(complaint=complaint).exists():
+            return Response({'error': 'Feedback already submitted for this complaint'}, status=status.HTTP_400_BAD_REQUEST)
+
 
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
             # Save while manually passing the complaint object
             serializer.save(complaint=complaint)
+            process_complaint_rating(complaint) # Handle points after saving feedback
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -105,7 +119,3 @@ class ComplaintViewSet(viewsets.ModelViewSet):
 
         # 4. Save the complaint with the student and the AI-assigned department
         serializer.save(student=self.request.user, assigned_department=dept)
-
-
-# Create your views here.
-
