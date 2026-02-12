@@ -182,35 +182,20 @@ const SubmitComplaint = ({setError, setSuccess}) => {
                   Drag and drop your image here
                 </p>
                 <p className="text-gray-400 text-sm mb-3">or click to browse</p>
-                <input
-                  type="file"
-                  id="cameraInput"
-                  accept="image/*"
-                  capture="environment"
-                  onChange={handleImageChange}
-                  className="hidden"
+                <input 
+                  type="file" id="cameraInput" accept="image/*" 
+                  capture="environment" className="hidden" onChange={handleImageChange} 
                 />
-
-                <input
-                  type="file"
-                  id="galleryInput"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="hidden"
+                <input 
+                  type="file" id="galleryInput" accept="image/*" 
+                  className="hidden" onChange={handleImageChange} 
                 />
 
                 <div className="flex gap-3 justify-center">
-                  <label
-                    htmlFor="cameraInput"
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer"
-                  >
+                  <label htmlFor="cameraInput" className="px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer active:scale-95 transition-transform">
                     📷 Take Photo
                   </label>
-
-                  <label
-                    htmlFor="galleryInput"
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg cursor-pointer"
-                  >
+                  <label htmlFor="galleryInput" className="px-4 py-2 bg-gray-600 text-white rounded-lg cursor-pointer active:scale-95 transition-transform">
                     🖼 Gallery
                   </label>
                 </div>
