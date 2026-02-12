@@ -86,6 +86,9 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         elif self.request.user.role == 'DEPT':
             return Complaint.objects.filter(assigned_department=self.request.user.department)
         
+        elif self.request.user.role == 'ADMIN':
+            return Complaint.objects.all()
+        
         return super().get_queryset()
 
     def perform_create(self, serializer):

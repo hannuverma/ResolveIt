@@ -131,73 +131,64 @@ const SubmitComplaint = ({ setError, setSuccess }) => {
 					</select>
 				</div>
 
-				{/* Image Upload (Optional) */}
-				<div>
-					<label
-						htmlFor='image'
-						className='block text-sm font-semibold text-gray-700 mb-2'
-					>
-						Upload Image{" "}
-						<span className='text-gray-400 text-xs'>(Optional)</span>
-					</label>
-					<div className='border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:bg-green-50 transition-colors'>
-						{formData.imagePreview ? (
-							<div className='space-y-4'>
-								<img
-									src={formData.imagePreview}
-									alt='Preview'
-									className='h-32 mx-auto rounded-lg object-cover'
-								/>
-								<button
-									type='button'
-									onClick={() =>
-										setFormData((prev) => ({
-											...prev,
-											image: null,
-											imagePreview: null,
-										}))
-									}
-									className='text-sm text-red-600 hover:text-red-700 font-medium'
-								>
-									Remove Image
-								</button>
-							</div>
-						) : (
-							<div>
-								<svg
-									className='mx-auto h-12 w-12 text-green-500 mb-2'
-									fill='none'
-									stroke='currentColor'
-									viewBox='0 0 24 24'
-								>
-									<path
-										strokeLinecap='round'
-										strokeLinejoin='round'
-										strokeWidth={1.5}
-										d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
-									/>
-								</svg>
-								<p className='text-gray-600 font-medium mb-1'>
-									Drag and drop your image here
-								</p>
-								<p className='text-gray-400 text-sm mb-3'>
-									or click to browse
-								</p>
-								<input
-									type='file'
-									id='cameraInput'
-									accept='image/*'
-									capture='environment'
-									className='hidden'
-									onChange={handleImageChange}
-								/>
-								<input
-									type='file'
-									id='galleryInput'
-									accept='image/*'
-									className='hidden'
-									onChange={handleImageChange}
-								/>
+        {/* Image Upload (Optional) */}
+        <div>
+          <label
+            htmlFor="image"
+            className="block text-sm font-semibold text-gray-700 mb-2"
+          >
+            Upload Image{" "}
+            <span className="text-gray-400 text-xs">(Optional)</span>
+          </label>
+          <div className="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:bg-green-50 transition-colors">
+            {formData.imagePreview ? (
+              <div className="space-y-4">
+                <img
+                  src={formData.imagePreview}
+                  alt="Preview"
+                  className="h-32 mx-auto rounded-lg object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      image: null,
+                      imagePreview: null,
+                    }))
+                  }
+                  className="text-sm text-red-600 hover:text-red-700 font-medium"
+                >
+                  Remove Image
+                </button>
+              </div>
+            ) : (
+              <div>
+                <svg
+                  className="mx-auto h-12 w-12 text-green-500 mb-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <p className="text-gray-600 font-medium mb-1">
+                  Drag and drop your image here
+                </p>
+                <p className="text-gray-400 text-sm mb-3">or click to browse</p>
+                <input 
+                  type="file" id="cameraInput" accept="image/*" 
+                  capture="environment" onChange={handleImageChange} 
+                />
+                <input 
+                  type="file" id="galleryInput" accept="image/*" 
+                  className="hidden" onChange={handleImageChange} 
+                />
 
 								<div className='flex gap-3 justify-center'>
 									<label

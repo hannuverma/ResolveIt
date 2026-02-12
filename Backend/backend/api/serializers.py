@@ -8,6 +8,7 @@ class departmentSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'reward_points']
         read_only_fields = ['id']
 
+
 class StudentGridSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -42,6 +43,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
         model = Feedback
         fields = ['id', 'complaint', 'rating', 'review_text']
         read_only_fields = ['id', 'complaint']
+
 
 class ComplaintSerializer(serializers.ModelSerializer):
     assigned_department = serializers.StringRelatedField()
