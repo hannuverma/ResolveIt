@@ -45,7 +45,35 @@ def loginUser(request):
         "is_password_changed" : user.is_password_changed,
     }
     return Response(profile, status=status.HTTP_200_OK)
+
     
+@api_view(['GET', 'POST'])
+def handle_feedback(request, complaint_id):
+    # GET: Retrieve feedback
+    if request.method == 'GET':
+        try:
+            feedback = Feedback.objects.get(complaint_id=complaint_id)
+            serializer = FeedbackSerializer(feedback)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Feedback.DoesNotExist:
+            return Response({'error': 'Feedback not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # POST: Create feedback
+    elif request.method == 'POST':
+        try:
+            complaint = Complaint.objects.get(id=complaint_id)
+        except Complaint.DoesNotExist:
+            return Response({'error': 'Complaint not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = FeedbackSerializer(data=request.data)
+        if serializer.is_valid():
+            # Save while manually passing the complaint object
+            serializer.save(complaint=complaint)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
 class ComplaintViewSet(viewsets.ModelViewSet):
     queryset = Complaint.objects.all()
     serializer_class = ComplaintSerializer
