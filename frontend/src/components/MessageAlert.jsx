@@ -12,7 +12,7 @@ const MessageAlert = ({ message, type = "error", position, onClose }) => {
 
 	if (isCenter) {
 		return (
-			<div className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 px-4'>
+			<div className='fixed inset-0 z-9999 flex items-center justify-center bg-black/40 px-4'>
 				<div
 					className={`w-full max-w-md rounded-lg border p-5 shadow-xl ${typeStyles[type]}`}
 				>

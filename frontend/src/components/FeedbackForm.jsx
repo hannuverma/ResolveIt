@@ -25,6 +25,7 @@ const FeedbackForm = ({
 			});
 
 			setSuccess("Feedback submitted successfully. Thank you!");
+			window.location.reload();
 			setShowFeedbackModal(false);
 		} catch (err) {
 			setError("Failed to submit feedback. Please try again.");
