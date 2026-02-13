@@ -10,4 +10,5 @@ urlpatterns = [
     path('admin/addstudents/', views.CreateUserView.as_view(), name='add-student'),
     path('admin/removestudents/<str:roll_no>/', views.removeStudent, name='remove-student'),
     path('admin/adddepartments/', views.addDepartment, name='add-department'),
+    path('admin/removedepartments/<str:code>/', views.removeDepartment, name='remove-department'),
 ]

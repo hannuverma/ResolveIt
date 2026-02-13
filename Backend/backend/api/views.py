@@ -39,11 +39,21 @@ def removeStudent(request, roll_no):
     except User.DoesNotExist:
         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
     
+@api_view(['DELETE'])
+def removeDepartment(request, code):
+    try:
+        department = Department.objects.get(code=code)
+        department.delete()
+        return Response({"message": "Department removed successfully"}, status=status.HTTP_200_OK)
+    except Department.DoesNotExist:
+        return Response({"error": "Department not found"}, status=status.HTTP_404_NOT_FOUND)
+
 
 @api_view(['POST'])
 def run_daily_penalties(request):
     apply_unresolved_penalties()
     return Response({"message": "Penalties applied"})
+
 
 @api_view(['POST'])
 def addDepartment(request):
@@ -65,21 +75,21 @@ def addDepartment(request):
     # Create department
     dept, created = Department.objects.get_or_create(
         name=name,
-        code=code,
         college=college,
-        defaults={'reward_points': 0}
+        defaults={'reward_points': 0, 'code': code}
     )
     
     if created:
-        # Create department user
-        dept_user = User.objects.create(
-            username=username,
-            role='DEPT',
-            college=college,
-            department=dept
-        )
-        dept_user.set_password(password)
-        dept_user.save()
+        # Create department user only if username doesn't exist
+        if not User.objects.filter(username=username).exists():
+            dept_user = User.objects.create(
+                username=username,
+                role='DEPT',
+                college=college,
+                department=dept
+            )
+            dept_user.set_password(password)
+            dept_user.save()
     
     serializer = departmentSerializer(dept)
     return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
