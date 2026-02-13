@@ -48,7 +48,11 @@ const StudentDashboard = () => {
 						<p className='text-red-700 font-medium'>{error}</p>
 					</div>
 				)}
-				<MessageAlert message={success} type='success' />
+				<MessageAlert
+					message={success}
+					type='success'
+					onClose={() => setSuccess("")}
+				/>
 
 				{/* Tab Navigation */}
 				<div className='flex gap-4 mb-8 border-b-2 border-green-200'>

@@ -35,13 +35,10 @@ const AdminDashboard = () => {
 		? JSON.parse(localStorage.getItem("userProfile"))
 		: null;
 
-
 	const resetAlerts = () => {
 		setError("");
 		setSuccess("");
 	};
-
-	
 
 	const handleAddStudent = async (event) => {
 		event.preventDefault();
@@ -67,7 +64,9 @@ const AdminDashboard = () => {
 		event.preventDefault();
 
 		try {
-			await api.delete(`/api/admin/removestudents/${removeStudentData.roll_no}/`);
+			await api.delete(
+				`/api/admin/removestudents/${removeStudentData.roll_no}/`,
+			);
 
 			setSuccess("Student removed successfully.");
 			setRemoveStudentData({ email: "", roll_no: "" });
@@ -82,33 +81,35 @@ const AdminDashboard = () => {
 	const handleAddDepartment = async (event) => {
 		event.preventDefault();
 		try {
-      await api.post("/api/admin/adddepartments/", addDepartmentData);
-      setSuccess("Department added successfully.");
-      setAddDepartmentData({
-        department_name: "",
-        username: "",
-        password: "",
-      });
-    } catch (error) {
-      setError(
-        "Failed to add department. Please check the details and try again.",
-      );
-      console.error("Add Department Error:", error);
-    }
+			await api.post("/api/admin/adddepartments/", addDepartmentData);
+			setSuccess("Department added successfully.");
+			setAddDepartmentData({
+				department_name: "",
+				username: "",
+				password: "",
+			});
+		} catch (error) {
+			setError(
+				"Failed to add department. Please check the details and try again.",
+			);
+			console.error("Add Department Error:", error);
+		}
 	};
 
 	const handleRemoveDepartment = async (event) => {
 		event.preventDefault();
 		try {
-      await api.delete(`/api/admin/removedepartments/${removeDepartmentData.username}/`);
-      setSuccess("Department removed successfully.");
-      setRemoveDepartmentData({ username: "" }); 
-    } catch (error) {
-      setError(
-        "Failed to remove department. Please check the details and try again.",
-      );
-      console.error("Remove Department Error:", error);
-    }
+			await api.delete(
+				`/api/admin/removedepartments/${removeDepartmentData.username}/`,
+			);
+			setSuccess("Department removed successfully.");
+			setRemoveDepartmentData({ username: "" });
+		} catch (error) {
+			setError(
+				"Failed to remove department. Please check the details and try again.",
+			);
+			console.error("Remove Department Error:", error);
+		}
 	};
 
 	return (
@@ -120,7 +121,11 @@ const AdminDashboard = () => {
 				/>
 
 				<MessageAlert message={error} type='error' />
-				<MessageAlert message={success} type='success' />
+				<MessageAlert
+					message={success}
+					type='success'
+					onClose={() => setSuccess("")}
+				/>
 
 				<div className='grid gap-6 lg:grid-cols-2'>
 					<AdminFormCard

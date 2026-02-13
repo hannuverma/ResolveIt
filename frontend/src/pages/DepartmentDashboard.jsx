@@ -146,7 +146,11 @@ const DepartmentDashboard = () => {
 
 				{/* Messages */}
 				<MessageAlert message={error} type='error' />
-				<MessageAlert message={success} type='success' />
+				<MessageAlert
+					message={success}
+					type='success'
+					onClose={() => setSuccess("")}
+				/>
 
 				{/* Complaints List */}
 				<ComplaintsList

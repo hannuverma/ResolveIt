@@ -101,7 +101,11 @@ const DepartmentLogin = () => {
 						</div>
 					)}
 
-					<MessageAlert message={success} type='success' />
+					<MessageAlert
+						message={success}
+						type='success'
+						onClose={() => setSuccess("")}
+					/>
 
 					<form onSubmit={handleSubmit} className='space-y-5'>
 						{/* Username Input */}
