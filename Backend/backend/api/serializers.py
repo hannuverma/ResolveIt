@@ -15,12 +15,10 @@ class StudentGridSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'username',
-            'email',
             'first_name',
             'last_name',
             'department',
             'is_active',
-            'branch',
             'password',
             'role',
             'roll_no',

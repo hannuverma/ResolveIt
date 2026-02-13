@@ -26,11 +26,7 @@ class Department(models.Model):
     def __str__(self):
         return f"{self.name} - {self.id}"
 
-class Branch(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    
-    def __str__(self):
-        return self.name
+
 
 class User(AbstractUser):
     class Roles(models.TextChoices):
@@ -40,9 +36,8 @@ class User(AbstractUser):
 
 
     college = models.ForeignKey(College, on_delete=models.CASCADE, null=True, blank=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField(null=True, blank=True)
     role = models.CharField(max_length=10, choices=Roles.choices, default=Roles.STUDENT)
-    branch = models.ForeignKey(Branch, on_delete=models.SET_NULL, null=True, blank=True)
     roll_no = models.CharField(max_length=20, unique=True, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     is_password_changed = models.BooleanField(default=False)

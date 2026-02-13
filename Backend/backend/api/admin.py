@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import User, Department, Complaint, Feedback, Branch, DepartmentPointTransaction, College
+from .models import User, Department, Complaint, Feedback, DepartmentPointTransaction, College
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -9,13 +9,10 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = (
             "username",
-            "email",
             "first_name",
             "last_name",
             "role",
-            "college",
             "department",
-            "branch",
             "roll_no",
         )
 
@@ -25,13 +22,10 @@ class CustomUserChangeForm(UserChangeForm):
         model = User
         fields = (
             "username",
-            "email",
             "first_name",
             "last_name",
             "role",
-            "college",
             "department",
-            "branch",
             "roll_no",
             "is_active",
             "is_staff",
@@ -44,15 +38,15 @@ class UserAdmin(BaseUserAdmin):
     form = CustomUserChangeForm
     model = User
 
-    list_display = ("username", "email", "role", "college", "is_active", "is_staff")
+    list_display = ("username", "role", "college", "is_active", "is_staff")
     list_filter = ("role", "college", "is_active", "is_staff")
-    search_fields = ("username", "email", "first_name", "last_name")
+    search_fields = ("username", "first_name", "last_name")
     ordering = ("username",)
 
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name", "email", "roll_no")}),
-        ("Organization", {"fields": ("role", "college", "department", "branch")}),
+        ("Personal info", {"fields": ("first_name", "last_name", "roll_no")}),
+        ("Organization", {"fields": ("role", "college", "department")}),
         ("Permissions", {"fields": ("is_active", "is_staff", "is_superuser", "groups", "user_permissions")}),
         ("Important dates", {"fields": ("last_login", "date_joined")}),
     )
@@ -62,13 +56,11 @@ class UserAdmin(BaseUserAdmin):
             "classes": ("wide",),
             "fields": (
                 "username",
-                "email",
                 "first_name",
                 "last_name",
                 "role",
                 "college",
                 "department",
-                "branch",
                 "roll_no",
                 "password1",
                 "password2",
@@ -99,6 +91,5 @@ class DepartmentAdmin(admin.ModelAdmin):
 admin.site.register(College)
 admin.site.register(Complaint)
 admin.site.register(Feedback)
-admin.site.register(Branch)
 admin.site.register(DepartmentPointTransaction)
 # Register your models here.
