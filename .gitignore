@@ -1,2 +1,6 @@
 Backend/backend/backend/__pycache__/settings.cpython-314.pyc
 Backend/backend/backend/__pycache__/
+Backend/backend/api/__pycache__/serializers.cpython-314.pyc
+Backend/backend/api/__pycache__/views.cpython-314.pyc
+__pycache__/
+*.pyc

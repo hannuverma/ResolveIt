@@ -4,9 +4,9 @@ import HomePage from "./pages/HomePage.jsx";
 import Login from "./pages/Login.jsx";
 import DepartmentLogin from "./pages/DepartmentLogin.jsx";
 import StudentDashboard from "./pages/StudentDashboard.jsx";
-import AdminDashboard from "./pages/AdminDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import NotFound from "./pages/NotFound.jsx";
+import DepartmentDashboard from "./pages/DepartmentDashboard.jsx";
 
 const App = () => {
 	return (
@@ -24,15 +24,15 @@ const App = () => {
 							</ProtectedRoute>
 						}
 					/>
-					<Route path='/studentDashboard' element={<StudentDashboard />} />
-					<Route
-						path='/admin'
+					{/* <Route
+						path='/department-dashboard'
 						element={
 							<ProtectedRoute>
-								<AdminDashboard />
+								<DepartmentDashboard />
 							</ProtectedRoute>
 						}
-					/>
+					/> */}
+					<Route path='/department-dashboard' element={<DepartmentDashboard />} />
 					<Route path='*' element={<NotFound />} />
 				</Routes>
 			</BrowserRouter>
