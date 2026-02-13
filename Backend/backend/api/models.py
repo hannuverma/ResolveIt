@@ -50,7 +50,7 @@ class Complaint(models.Model):
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
-    priority = models.CharField(max_length=10, choices=[('LOW', 'Low'), ('MEDIUM', 'Medium'), ('HIGH', 'High')], default='MEDIUM')
+    priority = models.CharField(max_length=10, choices=[('NORMAL', 'Normal'), ('MEDIUM', 'Medium'), ('HIGH', 'High')], default='MEDIUM')
 
     def save(self, *args, **kwargs):
         if self.status == self.Status.RESOLVED and self.resolved_at is None:

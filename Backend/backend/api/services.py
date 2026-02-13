@@ -95,7 +95,7 @@ def handle_unresolved_penalty(complaint):
     penalty_rules = {
         "HIGH": 1,
         "MEDIUM": 2,
-        "LOW": 3
+        "NORMAL": 3
     }
 
     interval = penalty_rules.get(complaint.priority)

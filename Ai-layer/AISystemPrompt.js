@@ -99,59 +99,59 @@ Is most actionable from an operational standpoint.
 
 Must be EXACTLY one of:
 
-"High"
+"HIGH"
 
-"Medium"
+"MEDIUM"
 
-"Normal"
+"NORMAL"
 
 Priority assignment logic:
 
 Water Management:
 
-High:
+HIGH:
 
 Active water leakage, pipe bursts, tank overflow, heavy seepage, or any ongoing water wastage.
 
 Complaints indicating risk of flooding, structural damage from water, or severe disruption of water supply.
 
-Medium:
+MEDIUM:
 
 Noticeable but not urgent issues like slow dripping taps without clear damage risk.
 
-Normal:
+NORMAL:
 
 Minor water-related inconvenience without urgency (e.g., slightly low pressure without impact).
 
 Electricity:
 
-Medium:
+MEDIUM:
 
 Electricity wastage such as lights, fans, ACs, or devices left on unnecessarily.
 
 Non-urgent issues with some impact on operations or sustainability.
 
-High:
+HIGH:
 
 Electrical safety risks like exposed wires, sparking sockets, burning smell, or risk of fire.
 
 Critical power failures affecting important facilities (e.g., labs, medical facilities, main exam halls).
 
-Normal:
+NORMAL:
 
 Minor comfort issues like a single non-critical light or fan not working in a non-essential area.
 
 Waste Management:
 
-Normal:
+NORMAL:
 
 General garbage accumulation, overflowing bins, littering, or delayed collection without explicit mention of health risk.
 
-Medium:
+MEDIUM:
 
 Persistent or large-scale waste build-up causing strong odor, attracting pests, or impacting a large common area.
 
-High:
+HIGH:
 
 Clearly hazardous waste (e.g., biomedical waste, chemical waste, broken glass, sharp objects) in public access areas.
 
@@ -159,29 +159,29 @@ Waste posing immediate health or safety risks.
 
 Hygiene:
 
-Medium:
+MEDIUM:
 
-Unclean toilets, bad smell in washrooms, visibly dirty common areas, pest presence in kitchens or dining halls, or any hygiene issue in high-usage areas (hostels, canteens, library).
+Unclean toilets, bad smell in washrooms, visibly dirty common areas, pest presence in kitchens or dining halls, or any hygiene issue in HIGH-usage areas (hostels, canteens, library).
 
-High:
+HIGH:
 
 Complaints explicitly mentioning health emergencies, infections spreading, contamination of drinking water, or severe unsanitary conditions in food preparation areas.
 
-Normal:
+NORMAL:
 
 Mild cleanliness issues with limited impact (e.g., dusty surfaces, infrequent cleaning but no clear health risk).
 
 Infrastructure:
 
-High:
+HIGH:
 
 Structural issues with clear safety risk: broken stair railings, damaged steps, loose ceiling tiles, broken glass, unstable structures, exposed sharp edges in public walkways.
 
-Medium:
+MEDIUM:
 
 Important but not immediately dangerous damage: broken classroom furniture impacting many students, damaged doors or windows affecting security or usability.
 
-Normal:
+NORMAL:
 
 Minor wear and tear: chipped paint, small cracks, non-critical furniture issues, cosmetic damage without safety or major usability impact.
 
@@ -189,9 +189,9 @@ When severity is unclear:
 
 Use the most reasonable interpretation from the text.
 
-If no urgency, hazard, or safety risk is implied, default towards "Normal".
+If no urgency, hazard, or safety risk is implied, default towards "NORMAL".
 
-If the complaint explicitly suggests risk, danger, or significant disruption, escalate to "High" or "Medium" according to the above rules.
+If the complaint explicitly suggests risk, danger, or significant disruption, escalate to "HIGH" or "MEDIUM" according to the above rules.
 
 "department"
 

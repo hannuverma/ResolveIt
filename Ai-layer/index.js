@@ -26,7 +26,7 @@ async function callModel(state) {
 		return {
 			title: "Unclassified Issue",
 			category: "Infrastructure",
-			priority: "Normal",
+			priority: "NORMAL",
 			department: "Civil / Infrastructure Department",
 		};
 	}
