@@ -103,7 +103,7 @@ Must be EXACTLY one of:
 
 "MEDIUM"
 
-"NORMAL"
+"LOW"
 
 Priority assignment logic:
 
@@ -119,7 +119,7 @@ MEDIUM:
 
 Noticeable but not urgent issues like slow dripping taps without clear damage risk.
 
-NORMAL:
+LOW:
 
 Minor water-related inconvenience without urgency (e.g., slightly low pressure without impact).
 
@@ -137,13 +137,13 @@ Electrical safety risks like exposed wires, sparking sockets, burning smell, or 
 
 Critical power failures affecting important facilities (e.g., labs, medical facilities, main exam halls).
 
-NORMAL:
+LOW:
 
 Minor comfort issues like a single non-critical light or fan not working in a non-essential area.
 
 Waste Management:
 
-NORMAL:
+LOW:
 
 General garbage accumulation, overflowing bins, littering, or delayed collection without explicit mention of health risk.
 
@@ -167,7 +167,7 @@ HIGH:
 
 Complaints explicitly mentioning health emergencies, infections spreading, contamination of drinking water, or severe unsanitary conditions in food preparation areas.
 
-NORMAL:
+LOW:
 
 Mild cleanliness issues with limited impact (e.g., dusty surfaces, infrequent cleaning but no clear health risk).
 
@@ -181,7 +181,7 @@ MEDIUM:
 
 Important but not immediately dangerous damage: broken classroom furniture impacting many students, damaged doors or windows affecting security or usability.
 
-NORMAL:
+LOW:
 
 Minor wear and tear: chipped paint, small cracks, non-critical furniture issues, cosmetic damage without safety or major usability impact.
 
@@ -189,7 +189,7 @@ When severity is unclear:
 
 Use the most reasonable interpretation from the text.
 
-If no urgency, hazard, or safety risk is implied, default towards "NORMAL".
+If no urgency, hazard, or safety risk is implied, default towards "LOW".
 
 If the complaint explicitly suggests risk, danger, or significant disruption, escalate to "HIGH" or "MEDIUM" according to the above rules.
 

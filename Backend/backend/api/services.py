@@ -95,7 +95,7 @@ def handle_unresolved_penalty(complaint):
     penalty_rules = {
         "HIGH": 1,
         "MEDIUM": 2,
-        "NORMAL": 3
+        "LOW": 3
     }
 
     interval = penalty_rules.get(complaint.priority)
@@ -120,11 +120,11 @@ def handle_unresolved_penalty(complaint):
         DepartmentPointTransaction.objects.create(
             department=department,
             complaint=complaint,
-            points=-1,
+            points=-5,
             transaction_type="PENALTY"
         )
 
-        department.reward_points = F('reward_points') - 1
+        department.reward_points = F('reward_points') - 5
         department.save()
 
     department.refresh_from_db()
