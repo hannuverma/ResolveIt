@@ -26,10 +26,10 @@ const AdminDashboard = () => {
 		department_name: "",
 		username: "",
 		password: "",
-    code: "",
+		code: "",
 	});
 	const [removeDepartmentData, setRemoveDepartmentData] = useState({
-    code: "",
+		code: "",
 	});
 
 	const adminProfile = localStorage.getItem("userProfile")
@@ -43,6 +43,8 @@ const AdminDashboard = () => {
 
 	const handleAddStudent = async (event) => {
 		event.preventDefault();
+		resetAlerts();
+		setLoadingAction("addStudent");
 		try {
 			await api.post("/api/admin/addstudents/", addStudentData);
 
@@ -58,11 +60,15 @@ const AdminDashboard = () => {
 				"Failed to add student. Please check the details and try again.",
 			);
 			console.error("Add Student Error:", error);
+		} finally {
+			setLoadingAction("");
 		}
 	};
 
 	const handleRemoveStudent = async (event) => {
 		event.preventDefault();
+		resetAlerts();
+		setLoadingAction("removeStudent");
 
 		try {
 			await api.delete(
@@ -76,40 +82,51 @@ const AdminDashboard = () => {
 				"Failed to remove student. Please check the details and try again.",
 			);
 			console.error("Remove Student Error:", error);
+		} finally {
+			setLoadingAction("");
 		}
 	};
 
 	const handleAddDepartment = async (event) => {
 		event.preventDefault();
+		resetAlerts();
+		setLoadingAction("addDepartment");
 		try {
 			await api.post("/api/admin/adddepartments/", addDepartmentData);
-			setSuccess("Department added successfully.");
 			setAddDepartmentData({
 				department_name: "",
 				username: "",
 				password: "",
+				code: "",
 			});
+			setSuccess("Department added successfully.");
 		} catch (error) {
 			setError(
 				"Failed to add department. Please check the details and try again.",
 			);
 			console.error("Add Department Error:", error);
+		} finally {
+			setLoadingAction("");
 		}
 	};
 
 	const handleRemoveDepartment = async (event) => {
 		event.preventDefault();
+		resetAlerts();
+		setLoadingAction("removeDepartment");
 		try {
 			await api.delete(
-				`/api/admin/removedepartments/${removeDepartmentData.username}/`,
+				`/api/admin/removedepartments/${removeDepartmentData.code}/`,
 			);
 			setSuccess("Department removed successfully.");
-			setRemoveDepartmentData({ username: "" });
+			setRemoveDepartmentData({ code: "" });
 		} catch (error) {
 			setError(
 				"Failed to remove department. Please check the details and try again.",
 			);
 			console.error("Remove Department Error:", error);
+		} finally {
+			setLoadingAction("");
 		}
 	};
 
@@ -182,7 +199,7 @@ const AdminDashboard = () => {
 
 					<AdminFormCard
 						title='Remove Department'
-						description='Remove a department account by username.'
+						description='Remove a department account by code.'
 					>
 						<RemoveDepartmentForm
 							formData={removeDepartmentData}
