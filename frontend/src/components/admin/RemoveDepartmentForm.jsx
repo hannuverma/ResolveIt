@@ -4,11 +4,11 @@ const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading }) => {
 	return (
 		<form className='space-y-4' onSubmit={onSubmit}>
 			<label className='space-y-1 text-sm font-medium text-slate-700'>
-				Department Username
+				Department code
 				<input
 					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
-					name='username'
-					value={formData.username}
+					name='code'
+					value={formData.code}
 					onChange={onChange}
 					placeholder='cs_dept'
 					required

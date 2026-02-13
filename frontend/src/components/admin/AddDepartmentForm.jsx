@@ -38,6 +38,18 @@ const AddDepartmentForm = ({ formData, onChange, onSubmit, loading }) => {
 						required
 					/>
 				</label>
+				<label className='space-y-1 text-sm font-medium text-slate-700'>
+					Department Code
+					<input
+						className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
+						name='code'
+						type='text'
+						value={formData.code}
+						onChange={onChange}
+						placeholder='Set a code for department'
+						required
+					/>
+				</label>
 			</div>
 			<button
 				className='w-full rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 mt-1.5 cursor-pointer'

@@ -26,9 +26,10 @@ const AdminDashboard = () => {
 		department_name: "",
 		username: "",
 		password: "",
+    code: "",
 	});
 	const [removeDepartmentData, setRemoveDepartmentData] = useState({
-		username: "",
+    code: "",
 	});
 
 	const adminProfile = localStorage.getItem("userProfile")
