@@ -2,28 +2,8 @@ import React, { useEffect, useState } from "react";
 import api from "../utils/api";
 
 
-const ComplaintsView = ({setShowFeedbackModal, setSelectedComplaint}) => {
-	const [complaints, setComplaints] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
-	const [success, setSuccess] = useState("");
-	// Fetch complaints on component mount
-	useEffect(() => {
-		fetchComplaints();
-	}, []);
+const ComplaintsView = ({setShowFeedbackModal, setSelectedComplaint, complaints, loading, setComplaints}) => {
 
-	const fetchComplaints = async () => {
-		try {
-			setLoading(true);
-			const response = await api.get("/api/complaints/");
-			setComplaints(response.data);
-		} catch (err) {
-			console.error("Error fetching complaints:", err);
-			setError("Failed to load complaints");
-		} finally {
-			setLoading(false);
-		}
-	};
 	const openFeedbackModal = (complaint) => {
 		setSelectedComplaint(complaint);
 		setShowFeedbackModal(true);

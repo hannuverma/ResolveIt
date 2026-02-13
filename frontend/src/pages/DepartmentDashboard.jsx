@@ -102,7 +102,7 @@ const DepartmentDashboard = () => {
 			// }
 
 			setSuccess("Complaint updated successfully!");
-			windows.location.reload();
+			fetchComplaints();
 			setShowEditModal(false);
 		} catch (err) {
 			setError("Failed to update complaint. Please try again.");

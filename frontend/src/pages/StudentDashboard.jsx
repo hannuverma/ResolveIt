@@ -4,6 +4,7 @@ import MessageAlert from "../components/MessageAlert";
 import SubmitComplaint from "../components/SubmitComplaint";
 import ComplaintsView from "../components/ComplaintsView";
 import FeedbackForm from "../components/FeedbackForm";
+import api from "../utils/api";
 
 const StudentDashboard = () => {
 	const studentProfile = localStorage.getItem("userProfile")
@@ -15,6 +16,25 @@ const StudentDashboard = () => {
 	const [success, setSuccess] = useState("");
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const [selectedComplaint, setSelectedComplaint] = useState(null);
+	const [complaints, setComplaints] = useState([]);
+	const [loading, setLoading] = useState(false);
+	// Fetch complaints on component mount
+	useEffect(() => {
+		fetchComplaints();
+	}, []);
+
+	const fetchComplaints = async () => {
+		try {
+			setLoading(true);
+			const response = await api.get("/api/complaints/");
+			setComplaints(response.data);
+		} catch (err) {
+			console.error("Error fetching complaints:", err);
+			setError("Failed to load complaints");
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const handleChangePassword = () => {
 		// TODO: wire up change password route or modal
@@ -118,6 +138,8 @@ const StudentDashboard = () => {
 						<ComplaintsView
 							setShowFeedbackModal={setShowFeedbackModal}
 							setSelectedComplaint={setSelectedComplaint}
+							complaints={complaints}
+							loading={loading}
 						/>
 
 						{/* Feedback Form - Displayed as a regular component */}
@@ -127,6 +149,7 @@ const StudentDashboard = () => {
 									setSuccess={setSuccess}
 									selectedComplaint={selectedComplaint}
 									setShowFeedbackModal={setShowFeedbackModal}
+									fetchComplaints={fetchComplaints}
 								/>
 							</div>
 						)}
@@ -143,6 +166,6 @@ const StudentDashboard = () => {
 			</div>
 		</div>
 	);
-};
+};;
 
 export default StudentDashboard;

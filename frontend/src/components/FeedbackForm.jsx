@@ -5,6 +5,7 @@ const FeedbackForm = ({
 	selectedComplaint,
 	setShowFeedbackModal,
 	setSuccess,
+	fetchComplaints
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -25,7 +26,7 @@ const FeedbackForm = ({
 			});
 
 			setSuccess("Feedback submitted successfully. Thank you!");
-			window.location.reload();
+			fetchComplaints(); // Refresh complaints to show new feedback
 			setShowFeedbackModal(false);
 		} catch (err) {
 			setError("Failed to submit feedback. Please try again.");
