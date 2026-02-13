@@ -51,7 +51,13 @@ const DepartmentLogin = () => {
 				setError("Student must use the student login page.");
 				localStorage.clear();
 				return;
-			} else {
+			}
+			else if (profileData.role === "ADMIN") {
+				setSuccess("Admin login successful! Redirecting to admin dashboard...");
+				localStorage.setItem("userProfile", JSON.stringify(profileData));
+				navigate("/admin-dashboard");
+			} 
+			else {
 				localStorage.setItem("userProfile", JSON.stringify(profileData));
 				setSuccess("Login successful!");
 				navigate("/department-dashboard");

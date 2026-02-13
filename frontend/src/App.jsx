@@ -7,6 +7,7 @@ import StudentDashboard from "./pages/StudentDashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes";
 import NotFound from "./pages/NotFound.jsx";
 import DepartmentDashboard from "./pages/DepartmentDashboard.jsx";
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 const App = () => {
 	return (
@@ -29,6 +30,15 @@ const App = () => {
 						element={
 							<ProtectedRoute>
 								<DepartmentDashboard />
+							</ProtectedRoute>
+						}
+					/>
+
+					<Route
+						path='/admin-dashboard'
+						element={
+							<ProtectedRoute>
+								<AdminDashboard />
 							</ProtectedRoute>
 						}
 					/>
