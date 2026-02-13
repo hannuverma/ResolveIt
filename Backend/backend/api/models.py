@@ -17,6 +17,7 @@ class Department(models.Model):
     college = models.ForeignKey(College, on_delete=models.CASCADE, default=None, null=True, blank=True)
     name = models.CharField(max_length=100, unique=True)
     reward_points = models.IntegerField(default=0)  
+    code = models.CharField(max_length=20, unique=True, null=True, blank=True)  # Optional code for department staff invitations
     
     class Meta:
         # Ensures one college can't have two "CS" departments, 
@@ -24,7 +25,7 @@ class Department(models.Model):
         unique_together = ('college', 'name')
 
     def __str__(self):
-        return f"{self.name} - {self.id}"
+        return f"{self.name} - {self.code}"
 
 
 
@@ -61,7 +62,7 @@ class Complaint(models.Model):
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='complaints')
     title = models.CharField(max_length=200, default='No Title', blank=True)
 
-    image = models.ImageField(upload_to='complaints')
+    image = models.ImageField(upload_to='complaints', null=True, blank=True)
     description = models.TextField()
     assigned_department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name='tasks')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
