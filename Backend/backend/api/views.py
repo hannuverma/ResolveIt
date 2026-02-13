@@ -8,8 +8,8 @@ from rest_framework import status
 from django.db import transaction
 import traceback
 from django.contrib.auth import authenticate, login as django_login
-from .serializers import StudentGridSerializer, ComplaintSerializer, FeedbackSerializer, departmentSerializer
-from .models import Complaint, Feedback, Department
+from .serializers import StudentGridSerializer, ComplaintSerializer, FeedbackSerializer, departmentSerializer, DepartmentPointTransactionSerializer
+from .models import Complaint, DepartmentPointTransaction, Feedback, Department
 from .models import User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -30,18 +30,11 @@ def run_daily_penalties(request):
     return Response({"message": "Penalties applied"})
 
 
-@api_view(['POST'])
-def loginUser(request):
-    data = request.data
-    email = data.get('email')
-    password = data.get('password')
 
-    user = authenticate(request, email=email, password=password)
-    if user is not None:
-        django_login(request, user)
-    else:
-        return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
-    
+@api_view(['GET'])
+def Profile(request):
+
+    user = request.user
     profile = {
         "id" : user.id,
         "username" : user.username,
@@ -151,4 +144,14 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             priority=priority,
             status=Complaint.Status.PENDING if department else Complaint.Status.PENDING
         )
+        
+@api_view(['GET'])
+def getDepartmentPoints(request, department_id):
+    try:
+        department = Department.objects.get(id=department_id)
+    except Department.DoesNotExist:
+        return Response({'error': 'Department not found'}, status=status.HTTP_404_NOT_FOUND)
 
+    transactions = DepartmentPointTransaction.objects.filter(department=department)
+    serializer = DepartmentPointTransactionSerializer(transactions, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
