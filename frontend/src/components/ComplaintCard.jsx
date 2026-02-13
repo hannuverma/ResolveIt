@@ -44,7 +44,7 @@ const ComplaintCard = ({
 					<img
 						src={complaint.image}
 						alt={complaint.title}
-						className='h-40 rounded-lg object-cover w-full'
+						className='h-40 rounded-lg object-contain w-full'
 					/>
 				</div>
 			)}
@@ -118,7 +118,7 @@ const ComplaintCard = ({
 			{/* Edit Button */}
 			<button
 				onClick={() => onEdit(complaint)}
-				className='w-full mt-4 px-4 py-3 bg-linear-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg'
+				className=' cursor-pointer w-full mt-4 px-4 py-3 bg-linear-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg'
 			>
 				<svg
 					className='w-5 h-5'
@@ -133,7 +133,7 @@ const ComplaintCard = ({
 						d='M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'
 					/>
 				</svg>
-				Edit Complaint
+				Update Complaint
 			</button>
 		</div>
 	);

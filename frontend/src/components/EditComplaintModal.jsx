@@ -11,14 +11,14 @@ const EditComplaintModal = ({
 	if (!complaint) return null;
 
 	return (
-		<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50'>
-			<div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-8 border-2 border-blue-300'>
+		<div className='fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50'>
+			<div className='bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-2 border-2 border-blue-300'>
 				<h2 className='text-2xl font-bold text-blue-900 mb-2'>
 					Edit Complaint
 				</h2>
 				<p className='text-gray-600 text-sm mb-6'>{complaint.title}</p>
 
-				<div className='space-y-6'>
+				<div className='space-y-3'>
 					{/* Status Field */}
 					<div>
 						<label
@@ -32,35 +32,12 @@ const EditComplaintModal = ({
 							name='status'
 							value={formData.status}
 							onChange={onFormChange}
-							className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+							className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-black'
 						>
 							<option value='pending'>Pending</option>
 							<option value='in_progress'>In Progress</option>
 							<option value='resolved'>Resolved</option>
-							<option value='rejected'>Rejected</option>
 							<option value='closed'>Closed</option>
-						</select>
-					</div>
-
-					{/* Priority Field */}
-					<div>
-						<label
-							htmlFor='priority'
-							className='block text-sm font-semibold text-gray-700 mb-2'
-						>
-							Priority
-						</label>
-						<select
-							id='priority'
-							name='priority'
-							value={formData.priority}
-							onChange={onFormChange}
-							className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
-						>
-							<option value='low'>Low</option>
-							<option value='medium'>Medium</option>
-							<option value='high'>High</option>
-							<option value='critical'>Critical</option>
 						</select>
 					</div>
 
@@ -79,7 +56,7 @@ const EditComplaintModal = ({
 							onChange={onFormChange}
 							placeholder='Provide feedback or response to the complaint...'
 							rows='5'
-							className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none'
+							className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none text-black'
 							maxLength={1000}
 						/>
 						<p className='text-xs text-gray-500 mt-1'>

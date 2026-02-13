@@ -92,15 +92,15 @@ const DepartmentDashboard = () => {
 				updateData,
 			);
 
-			if (editFormData.feedback) {
-				await api.post(
-					`/api/complaints/${selectedComplaint.id}/feedback/`,
-					{
-						rating: 5,
-						comment: editFormData.feedback,
-					},
-				);
-			}
+			// if (editFormData.feedback) {
+			// 	await api.post(
+			// 		`/api/complaints/${selectedComplaint.id}/feedback/`,
+			// 		{
+			// 			rating: 5,
+			// 			comment: editFormData.feedback,
+			// 		},
+			// 	);
+			// }
 
 			setSuccess("Complaint updated successfully!");
 			setShowEditModal(false);
@@ -113,6 +113,7 @@ const DepartmentDashboard = () => {
 	};
 
 	const getStatusColor = (status) => {
+		status = status.toLowerCase();
 		const statusColors = {
 			pending: "bg-yellow-100 text-yellow-800",
 			in_progress: "bg-blue-100 text-blue-800",
@@ -123,6 +124,7 @@ const DepartmentDashboard = () => {
 	};
 
 	const getPriorityColor = (priority) => {
+		priority = priority.toLowerCase();
 		const priorityColors = {
 			low: "bg-green-100 text-green-800",
 			medium: "bg-blue-100 text-blue-800",
