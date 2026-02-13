@@ -1,17 +1,40 @@
 import React, { useState, useEffect, use } from "react";
 import StudentProfileHeader from "../components/StudentProfileHeader";
+import MessageAlert from "../components/MessageAlert";
 import SubmitComplaint from "../components/SubmitComplaint";
 import ComplaintsView from "../components/ComplaintsView";
 import FeedbackForm from "../components/FeedbackForm";
+import api from "../utils/api";
 
 const StudentDashboard = () => {
-	const studentProfile = localStorage.getItem("userProfile")?JSON.parse(localStorage.getItem("userProfile")):null;
+	const studentProfile = localStorage.getItem("userProfile")
+		? JSON.parse(localStorage.getItem("userProfile"))
+		: null;
 
 	const [activeTab, setActiveTab] = useState("submit");
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const [selectedComplaint, setSelectedComplaint] = useState(null);
+	const [complaints, setComplaints] = useState([]);
+	const [loading, setLoading] = useState(false);
+	// Fetch complaints on component mount
+	useEffect(() => {
+		fetchComplaints();
+	}, []);
+
+	const fetchComplaints = async () => {
+		try {
+			setLoading(true);
+			const response = await api.get("/api/complaints/");
+			setComplaints(response.data);
+		} catch (err) {
+			console.error("Error fetching complaints:", err);
+			setError("Failed to load complaints");
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const handleChangePassword = () => {
 		// TODO: wire up change password route or modal
@@ -45,11 +68,11 @@ const StudentDashboard = () => {
 						<p className='text-red-700 font-medium'>{error}</p>
 					</div>
 				)}
-				{success && (
-					<div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-lg'>
-						<p className='text-green-700 font-medium'>{success}</p>
-					</div>
-				)}
+				<MessageAlert
+					message={success}
+					type='success'
+					onClose={() => setSuccess("")}
+				/>
 
 				{/* Tab Navigation */}
 				<div className='flex gap-4 mb-8 border-b-2 border-green-200'>
@@ -115,6 +138,8 @@ const StudentDashboard = () => {
 						<ComplaintsView
 							setShowFeedbackModal={setShowFeedbackModal}
 							setSelectedComplaint={setSelectedComplaint}
+							complaints={complaints}
+							loading={loading}
 						/>
 
 						{/* Feedback Form - Displayed as a regular component */}
@@ -124,6 +149,7 @@ const StudentDashboard = () => {
 									setSuccess={setSuccess}
 									selectedComplaint={selectedComplaint}
 									setShowFeedbackModal={setShowFeedbackModal}
+									fetchComplaints={fetchComplaints}
 								/>
 							</div>
 						)}
@@ -140,6 +166,6 @@ const StudentDashboard = () => {
 			</div>
 		</div>
 	);
-};
+};;
 
 export default StudentDashboard;

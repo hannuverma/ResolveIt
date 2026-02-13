@@ -84,7 +84,6 @@ const DepartmentDashboard = () => {
 
 			const updateData = {
 				status: editFormData.status,
-				priority: editFormData.priority,
 			};
 
 			await api.patch(
@@ -103,6 +102,7 @@ const DepartmentDashboard = () => {
 			// }
 
 			setSuccess("Complaint updated successfully!");
+			fetchComplaints();
 			setShowEditModal(false);
 		} catch (err) {
 			setError("Failed to update complaint. Please try again.");
@@ -146,7 +146,11 @@ const DepartmentDashboard = () => {
 
 				{/* Messages */}
 				<MessageAlert message={error} type='error' />
-				<MessageAlert message={success} type='success' />
+				<MessageAlert
+					message={success}
+					type='success'
+					onClose={() => setSuccess("")}
+				/>
 
 				{/* Complaints List */}
 				<ComplaintsList
