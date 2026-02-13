@@ -1,14 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
+import StudentProfileHeader from "../components/StudentProfileHeader";
 import SubmitComplaint from "../components/SubmitComplaint";
 import ComplaintsView from "../components/ComplaintsView";
 import FeedbackForm from "../components/FeedbackForm";
 
 const StudentDashboard = () => {
+	const studentProfile = localStorage.getItem("userProfile")?JSON.parse(localStorage.getItem("userProfile")):null;
+
 	const [activeTab, setActiveTab] = useState("submit");
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const [selectedComplaint, setSelectedComplaint] = useState(null);
+
+	const handleChangePassword = () => {
+		// TODO: wire up change password route or modal
+	};
 
 	return (
 		<div
@@ -16,6 +23,12 @@ const StudentDashboard = () => {
 			className='min-h-screen bg-linear-to-br from-green-50 via-emerald-50 to-teal-50 py-8 px-4'
 		>
 			<div className='max-w-6xl mx-auto'>
+				<StudentProfileHeader
+					firstName={studentProfile?.first_name || ""}
+					lastName={studentProfile?.last_name || ""}
+					onChangePassword={handleChangePassword}
+				/>
+
 				{/* Header */}
 				<div className='mb-8'>
 					<h1 className='text-4xl font-bold text-gray-800 mb-2'>
@@ -93,7 +106,9 @@ const StudentDashboard = () => {
 				</div>
 
 				{/* Tab Content */}
-				{activeTab === "submit" && <SubmitComplaint setError={setError} setSuccess={setSuccess} />}
+				{activeTab === "submit" && (
+					<SubmitComplaint setError={setError} setSuccess={setSuccess} />
+				)}
 
 				{activeTab === "history" && (
 					<>

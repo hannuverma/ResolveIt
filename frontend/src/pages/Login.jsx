@@ -40,7 +40,23 @@ const Login = () => {
 			console.log("Login response:", response.data);
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
 			localStorage.setItem(REFRESH_TOKEN, response.data.refresh);
-			navigate("/student-dashboard");
+
+			// fetching profile
+			const fetchProfile = async () => {
+				const profile = await api.get("/api/profile/");
+				console.log("Fetched student profile:", profile.data);
+				return profile.data;
+			};
+			const profileData = await fetchProfile();
+			if (profileData.role === "DEPT" || profileData.role === "ADMIN") {
+				setError("Department must use the department login page.");
+				localStorage.clear();
+				return;
+			}
+			else {
+				localStorage.setItem("userProfile", JSON.stringify(profileData));
+				navigate("/student-dashboard");
+			}
 		} catch (err) {
 			setError(
 				err.response?.data?.detail || "Login failed. Please try again.",
