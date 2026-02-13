@@ -7,8 +7,6 @@ import EditComplaintModal from "../components/EditComplaintModal";
 import DepartmentFooter from "../components/DepartmentFooter";
 
 const DepartmentDashboard = () => {
-	const [department, setDepartment] = useState(null);
-	const [college, setCollege] = useState("");
 	const [complaints, setComplaints] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
@@ -21,22 +19,25 @@ const DepartmentDashboard = () => {
 		feedback: "",
 	});
 
-	// Fetch department complaints on component mount
-	useEffect(() => {
-		fetchDepartmentData();
-	}, []);
+	const deptProfile = localStorage.getItem("userProfile")
+		? JSON.parse(localStorage.getItem("userProfile"))
+		: null;
 
-	const fetchDepartmentData = async () => {
+	// Redirect if not department user
+	useEffect(() => {
+		if (
+			!deptProfile ||
+			(deptProfile.role !== "DEPT" && deptProfile.role !== "ADMIN")
+		) {
+			navigate("/");
+		}
+	}, [deptProfile]);
+
+	const fetchComplaints = async () => {
 		try {
 			setLoading(true);
 			setError("");
 
-			// Fetch department info
-			const deptResponse = await api.get("/api/department/");
-			setDepartment(deptResponse.data);
-			setCollege(deptResponse.data.college || "Your College");
-
-			// Fetch complaints for this department
 			const complaintsResponse = await api.get("/api/complaints/");
 			// Sort by date posted (newest first)
 			const sortedComplaints = complaintsResponse.data.sort(
@@ -44,12 +45,16 @@ const DepartmentDashboard = () => {
 			);
 			setComplaints(sortedComplaints);
 		} catch (err) {
-			console.error("Error fetching data:", err);
+			console.error("Error fetching complaints:", err);
 			setError("Failed to load complaints. Please try again.");
 		} finally {
 			setLoading(false);
 		}
 	};
+
+	useEffect(() => {
+		fetchComplaints();
+	}, []);
 
 	const openEditModal = (complaint) => {
 		setSelectedComplaint(complaint);
@@ -99,10 +104,6 @@ const DepartmentDashboard = () => {
 
 			setSuccess("Complaint updated successfully!");
 			setShowEditModal(false);
-
-			setTimeout(() => {
-				fetchDepartmentData();
-			}, 1000);
 		} catch (err) {
 			setError("Failed to update complaint. Please try again.");
 			console.error("Error updating complaint:", err);
@@ -136,8 +137,8 @@ const DepartmentDashboard = () => {
 			<div className='max-w-7xl mx-auto'>
 				{/* Header */}
 				<DepartmentHeader
-					department={department}
-					college={college}
+					department={deptProfile?.department || "Department"}
+					college={deptProfile?.college || "College"}
 					complaintCount={complaints.length}
 				/>
 
