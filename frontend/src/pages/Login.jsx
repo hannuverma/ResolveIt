@@ -35,7 +35,6 @@ const Login = () => {
 				password: formData.password,
 			});
 
-			setSuccess("Login successful!");
 			setFormData({ username: "", password: "" });
 			console.log("Login response:", response.data);
 			localStorage.setItem(ACCESS_TOKEN, response.data.access);
@@ -49,12 +48,14 @@ const Login = () => {
 			};
 			const profileData = await fetchProfile();
 			if (profileData.role === "DEPT" || profileData.role === "ADMIN") {
+				setSuccess("");
 				setError("Department must use the department login page.");
 				localStorage.clear();
 				return;
-			}
-			else {
+			} else {
 				localStorage.setItem("userProfile", JSON.stringify(profileData));
+				setSuccess("Login successful!");
+
 				navigate("/student-dashboard");
 			}
 		} catch (err) {

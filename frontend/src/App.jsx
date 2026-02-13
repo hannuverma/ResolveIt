@@ -24,15 +24,15 @@ const App = () => {
 							</ProtectedRoute>
 						}
 					/>
-					{/* <Route
+					<Route
 						path='/department-dashboard'
 						element={
 							<ProtectedRoute>
 								<DepartmentDashboard />
 							</ProtectedRoute>
 						}
-					/> */}
-					<Route path='/department-dashboard' element={<DepartmentDashboard />} />
+					/>
+					{/* <Route path='/department-dashboard' element={<DepartmentDashboard />} /> */}
 					<Route path='*' element={<NotFound />} />
 				</Routes>
 			</BrowserRouter>
