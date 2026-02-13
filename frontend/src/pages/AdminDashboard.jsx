@@ -88,6 +88,7 @@ const AdminDashboard = () => {
 				department_name: "",
 				username: "",
 				password: "",
+				code: "",
 			});
 		} catch (error) {
 			setError(
@@ -101,10 +102,10 @@ const AdminDashboard = () => {
 		event.preventDefault();
 		try {
 			await api.delete(
-				`/api/admin/removedepartments/${removeDepartmentData.username}/`,
+				`/api/admin/removedepartments/${removeDepartmentData.code}/`,
 			);
 			setSuccess("Department removed successfully.");
-			setRemoveDepartmentData({ username: "" });
+			setRemoveDepartmentData({ code: "" });
 		} catch (error) {
 			setError(
 				"Failed to remove department. Please check the details and try again.",
@@ -182,7 +183,7 @@ const AdminDashboard = () => {
 
 					<AdminFormCard
 						title='Remove Department'
-						description='Remove a department account by username.'
+						description='Remove a department account by code.'
 					>
 						<RemoveDepartmentForm
 							formData={removeDepartmentData}

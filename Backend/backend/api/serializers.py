@@ -5,7 +5,7 @@ from .models import User, Complaint, Feedback, Department, DepartmentPointTransa
 class departmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'name', 'reward_points', 'college']
+        fields = ['id', 'name', 'reward_points', 'college', 'code']
         read_only_fields = ['id']
 
 
