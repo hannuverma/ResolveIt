@@ -97,7 +97,7 @@ const ComplaintCard = ({
 						Student ID
 					</p>
 					<p className='text-gray-700 font-semibold'>
-						{complaint.student_id || "N/A"}
+						{complaint.roll_no || "N/A"}
 					</p>
 				</div>
 			</div>
@@ -108,7 +108,7 @@ const ComplaintCard = ({
 					<p className='text-sm text-blue-700 font-medium mb-1'>
 						Department Feedback
 					</p>
-					<p className='text-gray-700'>{complaint.feedback.comment}</p>
+					<p className='text-gray-700'>{complaint.feedback.review_text}</p>
 					<p className='text-xs text-gray-500 mt-2'>
 						Rating: {complaint.feedback.rating}/5 ⭐
 					</p>

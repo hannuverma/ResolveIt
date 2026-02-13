@@ -5,7 +5,7 @@ from .models import User, Complaint, Feedback, Department, DepartmentPointTransa
 class departmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
-        fields = ['id', 'name', 'reward_points', 'college_name']
+        fields = ['id', 'name', 'reward_points', 'college']
         read_only_fields = ['id']
 
 
@@ -23,6 +23,8 @@ class StudentGridSerializer(serializers.ModelSerializer):
             'branch',
             'password',
             'role',
+            'roll_no',
+            'college_name',
         ]
         read_only_fields = ['id']
         extra_kwargs = {
@@ -50,9 +52,10 @@ class ComplaintSerializer(serializers.ModelSerializer):
     assigned_department = serializers.StringRelatedField()
     image = serializers.ImageField(max_length=None, use_url=True)
     feedback = FeedbackSerializer(read_only=True)
+    roll_no = serializers.CharField(source='student.roll_no', read_only=True)
     class Meta:
         model = Complaint
-        fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback']
+        fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback', 'roll_no']
         read_only_fields = ['id', 'student', 'created_at']
 
 
