@@ -16,13 +16,25 @@ const StudentProfileHeader = ({ firstName, lastName, onChangePassword }) => {
 						</h2>
 					</div>
 				</div>
-				<button
-					onClick={onChangePassword}
-					className='px-5 py-2.5 bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg'
-					type='button'
-				>
-					Change Password
-				</button>
+				<div className="flex gap-3.5">
+					<button
+						onClick={() => {
+							localStorage.clear();
+							window.location.reload();
+						}}
+						className='px-5 py-2.5 bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-lg transition-all duration-500 shadow-md hover:shadow-lg cursor-pointer'
+						type='button'
+					>
+						Logout
+					</button>
+					<button
+						onClick={onChangePassword}
+						className='px-5 py-2.5 bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold rounded-lg transition-all shadow-md hover:shadow-lg cursor-pointer'
+						type='button'
+					>
+						Change Password
+					</button>
+				</div>
 			</div>
 		</div>
 	);

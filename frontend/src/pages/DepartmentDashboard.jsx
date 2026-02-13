@@ -92,15 +92,15 @@ const DepartmentDashboard = () => {
 				updateData,
 			);
 
-			if (editFormData.feedback) {
-				await api.post(
-					`/api/complaints/${selectedComplaint.id}/feedback/`,
-					{
-						rating: 5,
-						comment: editFormData.feedback,
-					},
-				);
-			}
+			// if (editFormData.feedback) {
+			// 	await api.post(
+			// 		`/api/complaints/${selectedComplaint.id}/feedback/`,
+			// 		{
+			// 			rating: 5,
+			// 			comment: editFormData.feedback,
+			// 		},
+			// 	);
+			// }
 
 			setSuccess("Complaint updated successfully!");
 			setShowEditModal(false);
