@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import api from "../utils/api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../utils/constants";
 import Logo from "../assets/images/logo.png";
+import MessageAlert from "../components/MessageAlert";
 
 const DepartmentLogin = () => {
 	const navigate = useNavigate();
@@ -51,13 +52,13 @@ const DepartmentLogin = () => {
 				setError("Student must use the student login page.");
 				localStorage.clear();
 				return;
-			}
-			else if (profileData.role === "ADMIN") {
-				setSuccess("Admin login successful! Redirecting to admin dashboard...");
+			} else if (profileData.role === "ADMIN") {
+				setSuccess(
+					"Admin login successful! Redirecting to admin dashboard...",
+				);
 				localStorage.setItem("userProfile", JSON.stringify(profileData));
 				navigate("/admin-dashboard");
-			} 
-			else {
+			} else {
 				localStorage.setItem("userProfile", JSON.stringify(profileData));
 				setSuccess("Login successful!");
 				navigate("/department-dashboard");
@@ -100,14 +101,7 @@ const DepartmentLogin = () => {
 						</div>
 					)}
 
-					{/* Success Message */}
-					{success && (
-						<div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-lg'>
-							<p className='text-green-700 text-sm font-medium'>
-								{success}
-							</p>
-						</div>
-					)}
+					<MessageAlert message={success} type='success' />
 
 					<form onSubmit={handleSubmit} className='space-y-5'>
 						{/* Username Input */}

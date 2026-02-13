@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import api from "../utils/api";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../utils/constants";
 import Logo from "../assets/images/logo.png";
+import MessageAlert from "../components/MessageAlert";
 import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
@@ -94,14 +95,7 @@ const Login = () => {
 						</div>
 					)}
 
-					{/* Success Message */}
-					{success && (
-						<div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-lg'>
-							<p className='text-green-700 text-sm font-medium'>
-								{success}
-							</p>
-						</div>
-					)}
+					<MessageAlert message={success} type='success' />
 
 					<form onSubmit={handleSubmit} className='space-y-5'>
 						{/* username Input */}

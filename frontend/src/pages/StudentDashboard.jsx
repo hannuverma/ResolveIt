@@ -1,11 +1,14 @@
 import React, { useState, useEffect, use } from "react";
 import StudentProfileHeader from "../components/StudentProfileHeader";
+import MessageAlert from "../components/MessageAlert";
 import SubmitComplaint from "../components/SubmitComplaint";
 import ComplaintsView from "../components/ComplaintsView";
 import FeedbackForm from "../components/FeedbackForm";
 
 const StudentDashboard = () => {
-	const studentProfile = localStorage.getItem("userProfile")?JSON.parse(localStorage.getItem("userProfile")):null;
+	const studentProfile = localStorage.getItem("userProfile")
+		? JSON.parse(localStorage.getItem("userProfile"))
+		: null;
 
 	const [activeTab, setActiveTab] = useState("submit");
 	const [error, setError] = useState("");
@@ -45,11 +48,7 @@ const StudentDashboard = () => {
 						<p className='text-red-700 font-medium'>{error}</p>
 					</div>
 				)}
-				{success && (
-					<div className='mb-6 p-4 bg-green-50 border border-green-200 rounded-lg'>
-						<p className='text-green-700 font-medium'>{success}</p>
-					</div>
-				)}
+				<MessageAlert message={success} type='success' />
 
 				{/* Tab Navigation */}
 				<div className='flex gap-4 mb-8 border-b-2 border-green-200'>
