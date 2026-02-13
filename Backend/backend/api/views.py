@@ -43,6 +43,7 @@ def Profile(request):
         "last_name" : user.last_name,
         "role" : user.role,
         "department" : user.department.name if user.department else None,
+        "college_name" : user.college_name,
         "branch" : user.branch.name if user.branch else None,
         "is_password_changed" : user.is_password_changed,
     }
@@ -144,6 +145,56 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             priority=priority,
             status=Complaint.Status.PENDING if department else Complaint.Status.PENDING
         )
+
+    def _normalize_update_data(self, data):
+        normalized = data.copy()
+
+        status_value = normalized.get("status")
+        if isinstance(status_value, str):
+            normalized["status"] = status_value.upper()
+        return normalized
+
+    def _filter_allowed_fields(self, data):
+        allowed_fields = {"status"}
+        return {key: value for key, value in data.items() if key in allowed_fields}
+
+    def update(self, request, *args, **kwargs):
+        if request.user.role not in ("DEPT", "ADMIN"):
+            return Response({"detail": "You do not have permission to update complaints."}, status=status.HTTP_403_FORBIDDEN)
+
+        instance = self.get_object()
+
+        if request.user.role == "DEPT" and instance.assigned_department != request.user.department:
+            return Response({"detail": "You can only update complaints assigned to your department."}, status=status.HTTP_403_FORBIDDEN)
+
+        data = self._filter_allowed_fields(request.data)
+        if not data:
+            return Response({"detail": "No updatable fields provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = self._normalize_update_data(data)
+        serializer = self.get_serializer(instance, data=data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):
+        if request.user.role not in ("DEPT", "ADMIN"):
+            return Response({"detail": "You do not have permission to update complaints."}, status=status.HTTP_403_FORBIDDEN)
+
+        instance = self.get_object()
+
+        if request.user.role == "DEPT" and instance.assigned_department != request.user.department:
+            return Response({"detail": "You can only update complaints assigned to your department."}, status=status.HTTP_403_FORBIDDEN)
+
+        data = self._filter_allowed_fields(request.data)
+        if not data:
+            return Response({"detail": "No updatable fields provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+        data = self._normalize_update_data(data)
+        serializer = self.get_serializer(instance, data=data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
         
 @api_view(['GET'])
 def getDepartmentPoints(request, department_id):
