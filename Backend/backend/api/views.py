@@ -38,13 +38,11 @@ def Profile(request):
     profile = {
         "id" : user.id,
         "username" : user.username,
-        "email" : user.email,
         "first_name" : user.first_name,
         "last_name" : user.last_name,
         "role" : user.role,
         "department" : user.department.name if user.department else None,
         "college_name" : user.college_name,
-        "branch" : user.branch.name if user.branch else None,
         "is_password_changed" : user.is_password_changed,
     }
     return Response(profile, status=status.HTTP_200_OK)
