@@ -17,23 +17,15 @@ class StudentGridSerializer(serializers.ModelSerializer):
             'username',
             'first_name',
             'last_name',
-            'department',
-            'is_active',
-            'password',
-            'role',
             'roll_no',
-            'college_name',
         ]
         read_only_fields = ['id']
-        extra_kwargs = {
-            "password": {"write_only": True}
-        }
 
     def create(self, validated_data):
-        password = validated_data.pop("password")
+        roll_no = validated_data.get("roll_no")
         
         user = User(**validated_data)
-        user.set_password(password)   # 🔥 important
+        user.set_password(roll_no)
         user.save()
 
         return user

@@ -23,12 +23,66 @@ class CreateUserView(generics.CreateAPIView):
     serializer_class = StudentGridSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+        # Auto-assign the admin's college if the admin is authenticated
+        if self.request.user.is_authenticated and self.request.user.college:
+            user.college = self.request.user.college
+            user.save()
+
+@api_view(['DELETE'])
+def removeStudent(request, roll_no):
+    try:
+        student = User.objects.get(roll_no=roll_no, role='STUDENT')
+        student.delete()
+        return Response({"message": "Student removed successfully"}, status=status.HTTP_200_OK)
+    except User.DoesNotExist:
+        return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
+    
 
 @api_view(['POST'])
 def run_daily_penalties(request):
     apply_unresolved_penalties()
     return Response({"message": "Penalties applied"})
 
+@api_view(['POST'])
+def addDepartment(request):
+    name = request.data.get('department_name')
+    username = request.data.get('username')
+    password = request.data.get('password')
+    code = request.data.get('code')  # Optional code for student invitations
+    
+    if not name:
+        return Response({"error": "Department name is required"}, status=status.HTTP_400_BAD_REQUEST)
+    if not username or not password:
+        return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Auto-assign the admin's college if authenticated
+    college = None
+    if request.user.is_authenticated and request.user.college:
+        college = request.user.college
+    
+    # Create department
+    dept, created = Department.objects.get_or_create(
+        name=name,
+        code=code,
+        college=college,
+        defaults={'reward_points': 0}
+    )
+    
+    if created:
+        # Create department user
+        dept_user = User.objects.create(
+            username=username,
+            role='DEPT',
+            college=college,
+            department=dept
+        )
+        dept_user.set_password(password)
+        dept_user.save()
+    
+    serializer = departmentSerializer(dept)
+    return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -205,3 +259,4 @@ def getDepartmentPoints(request, department_id):
     transactions = DepartmentPointTransaction.objects.filter(department=department)
     serializer = DepartmentPointTransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
