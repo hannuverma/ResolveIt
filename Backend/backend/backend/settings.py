@@ -138,6 +138,7 @@ DATABASES = {
         "HOST": "aws-1-ap-northeast-1.pooler.supabase.com", # Use the pooler host!
         "PORT": "6543", # The pooler usually uses 6543 instead of 5432
         "pool_mode": "transaction", # Use transaction pooling for better performance
+        "CONN_MAX_AGE": 0,
     }
 }
 
@@ -145,20 +146,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
