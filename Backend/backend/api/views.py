@@ -233,6 +233,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         title = None
         priority = None
         department = None
+        similarity_hash = None
 
         try:
             load_dotenv()  # Load environment variables from .env file
@@ -248,7 +249,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             dept_name = data.get("department")
             title = data.get("title")
             priority = data.get("priority")
-
+            similarity_hash = data.get("similarity_hash")
         except requests.RequestException:
             print("AI request failed")
 
@@ -288,6 +289,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             assigned_department=department,
             title=title,
             priority=priority,
+            similarity_hash=similarity_hash,
             status=Complaint.Status.PENDING if department else Complaint.Status.PENDING
         )
 
