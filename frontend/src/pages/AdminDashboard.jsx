@@ -30,6 +30,7 @@ const AdminDashboard = () => {
 	});
 	const [removeDepartmentData, setRemoveDepartmentData] = useState({
 		code: "",
+		email: "",
 	});
 
 	const [departments, setDepartments] = useState([]);
@@ -74,7 +75,7 @@ const AdminDashboard = () => {
 
 		try {
 			await api.delete(
-				`/api/admin/removestudents/${removeStudentData.roll_no}/`,
+				`/api/admin/removestudents/${removeStudentData.email}/`,
 			);
 
 			setSuccess("Student removed successfully.");
@@ -120,10 +121,10 @@ const AdminDashboard = () => {
 		console.log("Department code to remove:", removeDepartmentData);
 		try {
 			await api.delete(
-				`/api/admin/removedepartments/${removeDepartmentData.code}/`,
+				`/api/admin/removedepartments/${removeDepartmentData.email}/`,
 			);
 			setSuccess("Department removed successfully.");
-			setRemoveDepartmentData({ code: "" });
+			setRemoveDepartmentData({ code: "", email: "" });
 			fetchDepartments();
 		} catch (error) {
 			setError(
@@ -142,18 +143,17 @@ const AdminDashboard = () => {
 			setError("Failed to fetch departments. Please try again later.");
 			console.error("Fetch Departments Error:", error);
 		}
-	}
+	};
 	useEffect(() => {
 		fetchDepartments();
-	}, [])
-	
+	}, []);
 
 	return (
 		<div className='min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-slate-100 px-4 py-10'>
 			<div className='mx-auto flex w-full max-w-6xl flex-col gap-6'>
 				<AdminHeader
 					adminName={adminProfile?.name || adminProfile?.username}
-					collegeName={adminProfile?.college}
+					collegeName={adminProfile?.college_name}
 				/>
 
 				<MessageAlert message={error} type='error' />
@@ -204,12 +204,12 @@ const AdminDashboard = () => {
 					>
 						<AddDepartmentForm
 							formData={addDepartmentData}
-							onChange={(event) =>
+							onChange={(event) => {
 								setAddDepartmentData((prev) => ({
 									...prev,
 									[event.target.name]: event.target.value,
-								}))
-							}
+								}));
+							}}
 							onSubmit={handleAddDepartment}
 							loading={loadingAction === "addDepartment"}
 							departments={departments}
@@ -222,12 +222,15 @@ const AdminDashboard = () => {
 					>
 						<RemoveDepartmentForm
 							formData={removeDepartmentData}
-							onChange={(event) =>
+							onChange={(event) => {
+								console.log("Field changed:", event.target
+									
+								);
 								setRemoveDepartmentData((prev) => ({
 									...prev,
 									[event.target.name]: event.target.value,
-								}))
-							}
+								}));
+							}}
 							onSubmit={handleRemoveDepartment}
 							loading={loadingAction === "removeDepartment"}
 							departments={departments}

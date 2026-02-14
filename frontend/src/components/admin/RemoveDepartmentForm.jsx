@@ -17,15 +17,16 @@ const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading, departmen
 					>
 						Select Department
 					</option>
-					{departments.map((dept) => (
-						<option
+					{departments.map((dept) => {
+						console.log("Department option:", dept)
+						return (<option
 							key={dept.code}
 							value={dept.code}
 							className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
 						>
 							{dept.name} ({dept.code})
-						</option>
-					))}
+						</option>)
+					})}
 				</select>
 			</label>
 			<button
