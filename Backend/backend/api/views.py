@@ -73,24 +73,24 @@ def addDepartment(request):
         college = request.user.college
     
     # Create department
+    
     dept, created = Department.objects.get_or_create(
         name=name,
         college=college,
         defaults={'reward_points': 0, 'code': code}
     )
     
-    if created:
-        # Create department user only if username doesn't exist
-        if not User.objects.filter(username=username).exists():
-            dept_user = User.objects.create(
-                username=username,
-                role='DEPT',
-                college=college,
-                department=dept
-            )
-            dept_user.set_password(password)
-            dept_user.save()
-    
+
+    if not User.objects.filter(username=username, college=college).exists():
+        dept_user = User.objects.create(
+            username=username,
+            role='DEPT',
+            college=college,
+            department=dept
+        )
+        dept_user.set_password(password)
+        dept_user.save()
+
     serializer = departmentSerializer(dept)
     return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
@@ -154,9 +154,12 @@ class ComplaintViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.user.role == 'STUDENT':
             return Complaint.objects.filter(student=self.request.user)
-        # Dept staff should see complaints assigned to them
+        # Dept staff should see complaints assigned to them in their college
         elif self.request.user.role == 'DEPT':
-            return Complaint.objects.filter(assigned_department=self.request.user.department)
+            return Complaint.objects.filter(
+                assigned_department=self.request.user.department,
+                student__college=self.request.user.college
+            )
         
         elif self.request.user.role == 'ADMIN':
             return Complaint.objects.all()
@@ -270,3 +273,9 @@ def getDepartmentPoints(request, department_id):
     serializer = DepartmentPointTransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def getAllDepartments(request):
+    departments = Department.objects.filter(college=request.user.college)
+        
+    serializer = departmentSerializer(departments, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

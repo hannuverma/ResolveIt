@@ -11,18 +11,18 @@ class College(models.Model):
     code = models.CharField(max_length=20, unique=True, null=True, blank=True) 
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.code if self.code else 'No Code'}"
 
 class Department(models.Model):
     college = models.ForeignKey(College, on_delete=models.CASCADE, default=None, null=True, blank=True)
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
     reward_points = models.IntegerField(default=0)  
-    code = models.CharField(max_length=20, unique=True, null=True, blank=True)  # Optional code for department staff invitations
+    code = models.CharField(max_length=20, null=True, blank=True)
     
     class Meta:
-        # Ensures one college can't have two "CS" departments, 
-        # but different colleges can both have "CS".
-        unique_together = ('college', 'name')
+        # Ensures one college can't have two departments with same name or code
+        # but different colleges can both have same names and codes
+        unique_together = [('college', 'name'), ('college', 'code')]
 
     def __str__(self):
         return f"{self.name} - {self.code}"
@@ -37,11 +37,14 @@ class User(AbstractUser):
 
 
     college = models.ForeignKey(College, on_delete=models.CASCADE, null=True, blank=True)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField(null=True, blank=True, unique=False) 
     role = models.CharField(max_length=10, choices=Roles.choices, default=Roles.STUDENT)
-    roll_no = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    roll_no = models.CharField(max_length=20, null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     is_password_changed = models.BooleanField(default=False)
+
+    class Meta:
+        unique_together = [('college', 'username'), ('college', 'roll_no')]
 
     @property
     def college_name(self):

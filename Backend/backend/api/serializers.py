@@ -45,7 +45,8 @@ class ComplaintSerializer(serializers.ModelSerializer):
     roll_no = serializers.CharField(source='student.roll_no', read_only=True)
     class Meta:
         model = Complaint
-        fields = ['id', 'student', 'image', 'description', 'assigned_department', 'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback', 'roll_no']
+        fields = ['id', 'student', 'image', 'description', 'assigned_department',
+                  'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback', 'roll_no']
         read_only_fields = ['id', 'student', 'created_at']
 
 
