@@ -17,7 +17,7 @@ const AdminHeader = ({ adminName, collegeName }) => {
 						{adminName || "Administrator"}
 					</p>
 					<p className='text-slate-500'>
-						College Access: {collegeName || "All Colleges"}
+						College Access: {collegeName || ""}
 					</p>
 				</div>
 			</div>

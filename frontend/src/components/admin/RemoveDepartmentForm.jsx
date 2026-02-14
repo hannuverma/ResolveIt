@@ -6,7 +6,7 @@ const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading, departmen
 			<label className='space-y-1 text-sm font-medium text-slate-700'>
 				Department code
 				<select
-					name='code'
+					name='email'
 					id=''
 					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
 					onChange={onChange}
@@ -17,15 +17,15 @@ const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading, departmen
 					>
 						Select Department
 					</option>
-					{departments.map((dept) => (
-						<option
+					{departments.map((dept) => {
+						return (<option
 							key={dept.code}
-							value={dept.code}
+							value={dept.user.username}
 							className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
 						>
 							{dept.name} ({dept.code})
-						</option>
-					))}
+						</option>)
+					})}
 				</select>
 			</label>
 			<button

@@ -40,9 +40,9 @@ def removeStudent(request, username):
         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
     
 @api_view(['DELETE'])
-def removeDepartment(request, code):
+def removeDepartment(request, username):
     try:
-        department = Department.objects.get(code=code)
+        department = Department.objects.get(username=username)
         department.delete()
         return Response({"message": "Department removed successfully"}, status=status.HTTP_200_OK)
     except Department.DoesNotExist:
