@@ -17,6 +17,8 @@ from rest_framework import viewsets, status
 from .services import add_department_points, apply_unresolved_penalties, process_complaint_rating
 from rest_framework.decorators import api_view
 import requests
+from dotenv import load_dotenv
+import os
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -233,8 +235,9 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         department = None
 
         try:
+            load_dotenv()  # Load environment variables from .env file
             ai_response = requests.post(
-                "http://localhost:4000/api/analyze_complaint/",
+                os.getenv("AI_LAYER_API"),
                 json={"description": description},
                 timeout=5
             )

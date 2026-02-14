@@ -32,13 +32,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
+# Load .env file when present (development). In production, set real env vars.
+load_dotenv()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-nma=xi6x2p-crjg^ifqqkapyu1qjd0l=+wn)-rijk_o%$!k3w_"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-default-key-for-dev-only")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+# ALLOWED_HOSTS: comma-separated list
+ALLOWED_HOSTS = [h.strip() for h in os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",") if h.strip()]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -50,8 +54,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("SIMPLE_JWT_ACCESS_LIFETIME_MIN", "30"))),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=int(os.getenv("SIMPLE_JWT_REFRESH_LIFETIME_DAYS", "1"))),
 }
 
 # Application definition
@@ -131,14 +135,14 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres.skocgaosaosdsnhztocx", # CHECK THIS in your 'Connect' popup!
-        "PASSWORD": "ResolveIt@312",
-        "HOST": "aws-1-ap-northeast-1.pooler.supabase.com", # Use the pooler host!
-        "PORT": "6543", # The pooler usually uses 6543 instead of 5432
-        "pool_mode": "transaction", # Use transaction pooling for better performance
-        "CONN_MAX_AGE": 0,
+        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.getenv("DB_NAME", os.getenv("POSTGRES_DB", "postgres")),
+        "USER": os.getenv("DB_USER", os.getenv("POSTGRES_USER", "postgres.skocgaosaosdsnhztocx")),
+        "PASSWORD": os.getenv("DB_PASSWORD", os.getenv("POSTGRES_PASSWORD", "ResolveIt@312")),
+        "HOST": os.getenv("DB_HOST", os.getenv("POSTGRES_HOST", "aws-1-ap-northeast-1.pooler.supabase.com")),
+        "PORT": os.getenv("DB_PORT", os.getenv("POSTGRES_PORT", "6543")),
+        # optional pooling settings
+        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "0")),
     }
 }
 
@@ -178,9 +182,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'dwe6n6goq',
-    'API_KEY': '786111112512728',
-    'API_SECRET': '6G9GDXuSX_11dpt5mHHK9HWnBjI',
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', 'dwe6n6goq'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', '786111112512728'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', '6G9GDXuSX_11dpt5mHHK9HWnBjI'),
 }
 
 STORAGES = {
@@ -191,3 +195,17 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+# Email settings (optional)
+EMAIL_HOST = os.getenv("EMAIL_HOST", "")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587")) if os.getenv("EMAIL_PORT") else None
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True").lower() in ("1", "true", "yes")
+
+# Static/media
+STATIC_URL = os.getenv("STATIC_URL", "static/")
+STATIC_ROOT = BASE_DIR / os.getenv("STATIC_ROOT", "staticfiles")
+
+# Allow override for media files
+DEFAULT_FILE_STORAGE = os.getenv("DEFAULT_FILE_STORAGE", "cloudinary_storage.storage.MediaCloudinaryStorage")
