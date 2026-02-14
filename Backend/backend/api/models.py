@@ -68,7 +68,7 @@ class Complaint(models.Model):
 
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='complaints')
     title = models.CharField(max_length=200, default='No Title', blank=True)
-
+    similarity_hash = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='complaints', null=True, blank=True)
     description = models.TextField()
     assigned_department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name='tasks')
