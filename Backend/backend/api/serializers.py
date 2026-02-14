@@ -1,8 +1,6 @@
 from rest_framework import serializers
 from .models import User, Complaint, Feedback, Department, DepartmentPointTransaction
-
-
-
+from django.db.models import Avg
 
 
 class StudentGridSerializer(serializers.ModelSerializer):
@@ -53,12 +51,63 @@ class ComplaintSerializer(serializers.ModelSerializer):
     assigned_department = serializers.CharField(source='assigned_department.name', read_only=True)
     image = serializers.ImageField(max_length=None, use_url=True)
     feedback = FeedbackSerializer(read_only=True)
-    roll_no = serializers.CharField(source='student.roll_no', read_only=True)
+    # Only expose `roll_no` to admins or the complaint owner; hide for department staff
+    roll_no = serializers.SerializerMethodField()
+    group_average_rating = serializers.SerializerMethodField()
+
+    def get_group_average_rating(self, obj):
+        # Handle both model instances and dictionaries
+        similarity_hash = obj.similarity_hash if hasattr(obj, 'similarity_hash') else obj.get('similarity_hash') if isinstance(obj, dict) else None
+        
+        if not similarity_hash:
+            return None
+
+        # Aggregate feedback ratings across ALL complaints with the same similarity_hash
+        # that have feedback, regardless of which complaint the feedback was submitted on
+        from .models import Feedback
+        feedbacks = Feedback.objects.filter(
+            complaint__similarity_hash=similarity_hash
+            
+        )
+        
+        if not feedbacks.exists():
+            return None
+        
+        ratings = [fb.rating for fb in feedbacks]
+        if not ratings:
+            return None
+        
+        avg = sum(ratings) / len(ratings)
+        return round(avg)
+
+
     class Meta:
         model = Complaint
         fields = ['id', 'student', 'image', 'description', 'assigned_department',
-                  'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback', 'roll_no']
+                  'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback', 'roll_no','group_average_rating',]
         read_only_fields = ['id', 'student', 'created_at']
+
+    def get_roll_no(self, obj):
+        request = self.context.get('request') if self.context else None
+        
+        # Handle both model instances and dictionaries
+        student = obj.student if hasattr(obj, 'student') else obj.get('student') if isinstance(obj, dict) else None
+        
+        # If no request context, be conservative and return the value
+        if not request or not hasattr(request, 'user'):
+            return student.roll_no if student and hasattr(student, 'roll_no') else None
+
+        user = request.user
+        # Admins can see roll_no
+        if getattr(user, 'role', None) == 'ADMIN':
+            return student.roll_no if student and hasattr(student, 'roll_no') else None
+        
+        # Check if current user is the complaint's student (compare by ID)
+        if student and hasattr(student, 'id') and hasattr(user, 'id') and student.id == user.id:
+            return student.roll_no if hasattr(student, 'roll_no') else None
+
+        # Department staff and others should NOT receive identifying student details
+        return None
 
 
 class DepartmentPointTransactionSerializer(serializers.ModelSerializer):

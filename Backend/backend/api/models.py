@@ -20,6 +20,7 @@ class Department(models.Model):
     name = models.CharField(max_length=100)
     reward_points = models.IntegerField(default=0)  
     code = models.CharField(max_length=20, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
     
     class Meta:
         # Ensures one college can't have two departments with same name or code
@@ -76,6 +77,8 @@ class Complaint(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=10, choices=[('LOW', 'Low'), ('MEDIUM', 'Medium'), ('HIGH', 'High')], default='MEDIUM')
+    repeated_complaint = models.BooleanField(default=False)  # Flag to indicate if this is a repeated complaint
+    times_reported = models.IntegerField(default=1)  # For tracking how many times a similar complaint has been reported
 
     def save(self, *args, **kwargs):
         if self.status == self.Status.RESOLVED and self.resolved_at is None:
@@ -114,7 +117,7 @@ class DepartmentPointTransaction(models.Model):
     ]
 
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, null=True, blank=True)
+    complaint = models.ForeignKey(Complaint, on_delete=models.DO_NOTHING, null=True, blank=True)
     points = models.IntegerField()
     transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
     penalty_day = models.IntegerField(null=True, blank=True)
