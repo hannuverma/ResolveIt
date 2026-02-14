@@ -73,23 +73,43 @@ def addDepartment(request):
         college = request.user.college
     
     # Create department
-    
-    dept, created = Department.objects.get_or_create(
-        name=name,
-        college=college,
-        defaults={'reward_points': 0, 'code': code}
-    )
-    
+    from django.db import transaction
 
-    if not User.objects.filter(username=username, college=college).exists():
-        dept_user = User.objects.create(
-            username=username,
-            role='DEPT',
-            college=college,
-            department=dept
-        )
-        dept_user.set_password(password)
-        dept_user.save()
+    try:
+        with transaction.atomic():
+            dept, created = Department.objects.get_or_create(
+                name=name,
+                college=college,
+                defaults={'reward_points': 0, 'code': code}
+            )
+
+            # If department user doesn't exist or department has no linked user, create and attach
+            if username and password:
+                user_qs = User.objects.filter(username=username, college=college)
+                if user_qs.exists():
+                    dept_user = user_qs.first()
+                    # ensure role and department are set
+                    dept_user.role = 'DEPT'
+                    dept_user.department = dept
+                    dept_user.save()
+                else:
+                    dept_user = User.objects.create(
+                        username=username,
+                        role='DEPT',
+                        college=college,
+                        department=dept
+                    )
+                    dept_user.set_password(password)
+                    dept_user.save()
+
+                # attach OneToOne link on Department if not already set
+                if not dept.user or dept.user != dept_user:
+                    dept.user = dept_user
+                    dept.save()
+
+    except Exception:
+        traceback.print_exc()
+        return Response({"error": "Failed to create department or user"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     serializer = departmentSerializer(dept)
     return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
@@ -194,9 +214,31 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         except requests.RequestException:
             print("AI request failed")
 
-        # Get or create department safely
+        # Resolve department by department-user username first (department usernames are unique),
+        # then fall back to name lookups/creation to avoid MultipleObjectsReturned.
         if dept_name:
-            department, _ = Department.objects.get_or_create(name=dept_name)
+            department = None
+            try:
+                # Try to find department whose linked user has this username
+                department = Department.objects.filter(user__username=dept_name).first()
+            except Exception:
+                department = None
+
+            # If not found, try to find by name within student's college
+            if not department:
+                try:
+                    if self.request.user and getattr(self.request.user, 'college', None):
+                        department = Department.objects.filter(name=dept_name, college=self.request.user.college).first()
+                except Exception:
+                    department = None
+
+            # Fallback: any department with that name
+            if not department:
+                department = Department.objects.filter(name=dept_name).first()
+
+            # If still not found, create one (attach to student's college when available)
+            if not department:
+                department = Department.objects.create(name=dept_name, college=(self.request.user.college if getattr(self.request.user, 'college', None) else None))
 
 
         if not priority:
@@ -275,7 +317,22 @@ def getDepartmentPoints(request, department_id):
 
 @api_view(['GET'])
 def getAllDepartments(request):
-    departments = Department.objects.filter(college=request.user.college)
-        
+    # Allow passing a username query param to fetch departments for that user's college
+    username = request.GET.get('username')
+    college = None
+
+    if username:
+        try:
+            target_user = User.objects.get(username=username)
+            college = target_user.college
+        except User.DoesNotExist:
+            return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+    else:
+        if not request.user or not request.user.is_authenticated:
+            return Response({"error": "Authentication required or provide username"}, status=status.HTTP_401_UNAUTHORIZED)
+        college = request.user.college
+
+    departments = Department.objects.filter(college=college)
+
     serializer = departmentSerializer(departments, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
