@@ -273,3 +273,9 @@ def getDepartmentPoints(request, department_id):
     serializer = DepartmentPointTransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+@api_view(['GET'])
+def getAllDepartments(request):
+    departments = Department.objects.filter(college=request.user.college)
+        
+    serializer = departmentSerializer(departments, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)

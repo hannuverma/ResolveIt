@@ -11,4 +11,5 @@ urlpatterns = [
     path('admin/removestudents/<str:roll_no>/', views.removeStudent, name='remove-student'),
     path('admin/adddepartments/', views.addDepartment, name='add-department'),
     path('admin/removedepartments/<str:code>/', views.removeDepartment, name='remove-department'),
+    path('admin/getdepartments/', views.getAllDepartments, name='get-departments'),
 ]
