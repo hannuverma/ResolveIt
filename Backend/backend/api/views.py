@@ -1,7 +1,7 @@
 from datetime import timezone
 from django.shortcuts import render
 from rest_framework import generics
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import status
@@ -355,7 +355,9 @@ def getDepartmentPoints(request, department_id):
     serializer = DepartmentPointTransactionSerializer(transactions, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
+
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def getAllDepartments(request):
     # Allow passing a username query param to fetch departments for that user's college
     username = request.GET.get('username')
