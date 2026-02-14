@@ -31,9 +31,9 @@ class CreateUserView(generics.CreateAPIView):
             user.save()
 
 @api_view(['DELETE'])
-def removeStudent(request, roll_no):
+def removeStudent(request, username):
     try:
-        student = User.objects.get(roll_no=roll_no, role='STUDENT')
+        student = User.objects.get(username=username, role='STUDENT')
         student.delete()
         return Response({"message": "Student removed successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
