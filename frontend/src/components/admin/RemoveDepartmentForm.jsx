@@ -1,18 +1,31 @@
 import React from "react";
 
-const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading }) => {
+const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading, departments }) => {
 	return (
 		<form className='space-y-4' onSubmit={onSubmit}>
 			<label className='space-y-1 text-sm font-medium text-slate-700'>
 				Department code
-				<input
-					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
+				<select
 					name='code'
-					value={formData.code}
-					onChange={onChange}
-					placeholder='cs_dept'
-					required
-				/>
+					id=''
+					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
+				>
+					<option
+						value=''
+						className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
+					>
+						Select Department
+					</option>
+					{departments.map((dept) => (
+						<option
+							key={dept.code}
+							value={dept.code}
+							className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
+						>
+							{dept.name} ({dept.code})
+						</option>
+					))}
+				</select>
 			</label>
 			<button
 				className='w-full rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-700 disabled:cursor-not-allowed disabled:bg-amber-400 mt-3.5 cursor-pointer'

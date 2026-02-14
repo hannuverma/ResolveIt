@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 
-const AddDepartmentForm = ({ formData, onChange, onSubmit, loading }) => {
+const AddDepartmentForm = ({ formData, onChange, onSubmit, loading, departments }) => {
+	const [customValidity, setCustomValidity] = useState("");
+	const checkduplicate = (event) => {
+		const code = event.target.value;
+		const isDuplicate = departments.some(dept => dept.code === code);
+		if (isDuplicate) {
+			event.target.setCustomValidity("Department code already exists.");
+			setCustomValidity("Department code already exists.");
+		} else {
+			event.target.setCustomValidity("");
+			setCustomValidity("");
+		}
+	};
+
 	return (
 		<form className='space-y-4' onSubmit={onSubmit}>
 			<label className='space-y-1 text-sm font-medium text-slate-700'>
@@ -45,10 +58,14 @@ const AddDepartmentForm = ({ formData, onChange, onSubmit, loading }) => {
 						name='code'
 						type='text'
 						value={formData.code}
-						onChange={onChange}
+						onChange={(event) => {
+							onChange(event);
+							checkduplicate(event);
+						}}
 						placeholder='Set a code for department'
 						required
 					/>
+					{customValidity && <p className="text-red-600 text-sm">{customValidity}</p>}
 				</label>
 			</div>
 			<button

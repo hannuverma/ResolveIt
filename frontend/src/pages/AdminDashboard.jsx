@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import api from "../utils/api";
 import MessageAlert from "../components/MessageAlert";
 import AdminHeader from "../components/admin/AdminHeader";
@@ -31,6 +31,8 @@ const AdminDashboard = () => {
 	const [removeDepartmentData, setRemoveDepartmentData] = useState({
 		code: "",
 	});
+
+	const [departments, setDepartments] = useState([]);
 
 	const adminProfile = localStorage.getItem("userProfile")
 		? JSON.parse(localStorage.getItem("userProfile"))
@@ -100,6 +102,7 @@ const AdminDashboard = () => {
 				code: "",
 			});
 			setSuccess("Department added successfully.");
+			fetchDepartments();
 		} catch (error) {
 			setError(
 				"Failed to add department. Please check the details and try again.",
@@ -118,8 +121,10 @@ const AdminDashboard = () => {
 			await api.delete(
 				`/api/admin/removedepartments/${removeDepartmentData.code}/`,
 			);
+			console.log("Department code to remove:", removeDepartmentData.code);
 			setSuccess("Department removed successfully.");
 			setRemoveDepartmentData({ code: "" });
+			fetchDepartments();
 		} catch (error) {
 			setError(
 				"Failed to remove department. Please check the details and try again.",
@@ -129,6 +134,19 @@ const AdminDashboard = () => {
 			setLoadingAction("");
 		}
 	};
+	const fetchDepartments = async () => {
+		try {
+			const response = await api.get("/api/admin/departments/");
+			setDepartments(response.data);
+		} catch (error) {
+			setError("Failed to fetch departments. Please try again later.");
+			console.error("Fetch Departments Error:", error);
+		}
+	}
+	useEffect(() => {
+		fetchDepartments();
+	}, [])
+	
 
 	return (
 		<div className='min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-slate-100 px-4 py-10'>
@@ -194,6 +212,7 @@ const AdminDashboard = () => {
 							}
 							onSubmit={handleAddDepartment}
 							loading={loadingAction === "addDepartment"}
+							departments={departments}
 						/>
 					</AdminFormCard>
 
@@ -211,6 +230,7 @@ const AdminDashboard = () => {
 							}
 							onSubmit={handleRemoveDepartment}
 							loading={loadingAction === "removeDepartment"}
+							departments={departments}
 						/>
 					</AdminFormCard>
 				</div>
