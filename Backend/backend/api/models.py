@@ -15,6 +15,8 @@ class College(models.Model):
 
 class Department(models.Model):
     college = models.ForeignKey(College, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    # Link to the department's user account (if this department has a login)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='department_account')
     name = models.CharField(max_length=100)
     reward_points = models.IntegerField(default=0)  
     code = models.CharField(max_length=20, null=True, blank=True)
@@ -25,6 +27,8 @@ class Department(models.Model):
         unique_together = [('college', 'name'), ('college', 'code')]
 
     def __str__(self):
+        if self.user:
+            return f"{self.name} ({self.user.username}) - {self.code}"
         return f"{self.name} - {self.code}"
 
 
@@ -40,7 +44,7 @@ class User(AbstractUser):
     email = models.EmailField(null=True, blank=True, unique=False) 
     role = models.CharField(max_length=10, choices=Roles.choices, default=Roles.STUDENT)
     roll_no = models.CharField(max_length=20, null=True, blank=True)
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, related_name='members')
     is_password_changed = models.BooleanField(default=False)
 
     class Meta:

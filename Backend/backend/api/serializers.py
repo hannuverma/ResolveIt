@@ -2,11 +2,7 @@ from rest_framework import serializers
 from .models import User, Complaint, Feedback, Department, DepartmentPointTransaction
 
 
-class departmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Department
-        fields = ['id', 'name', 'reward_points', 'college', 'code']
-        read_only_fields = ['id']
+
 
 
 class StudentGridSerializer(serializers.ModelSerializer):
@@ -30,6 +26,20 @@ class StudentGridSerializer(serializers.ModelSerializer):
 
         return user
     
+class departmentSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Department
+        fields = ['id', 'name', 'reward_points', 'college', 'code', 'user']
+        read_only_fields = ['id']
+
+    def get_user(self, obj):
+        if obj.user:
+            return {
+                'username': obj.user.username,
+            }
+        return None
 
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,7 +49,8 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
 
 class ComplaintSerializer(serializers.ModelSerializer):
-    assigned_department = serializers.StringRelatedField()
+    # Expose only the department's name (no user/email/code)
+    assigned_department = serializers.CharField(source='assigned_department.name', read_only=True)
     image = serializers.ImageField(max_length=None, use_url=True)
     feedback = FeedbackSerializer(read_only=True)
     roll_no = serializers.CharField(source='student.roll_no', read_only=True)
