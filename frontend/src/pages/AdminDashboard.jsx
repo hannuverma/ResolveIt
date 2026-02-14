@@ -117,11 +117,11 @@ const AdminDashboard = () => {
 		event.preventDefault();
 		resetAlerts();
 		setLoadingAction("removeDepartment");
+		console.log("Department code to remove:", removeDepartmentData);
 		try {
 			await api.delete(
 				`/api/admin/removedepartments/${removeDepartmentData.code}/`,
 			);
-			console.log("Department code to remove:", removeDepartmentData.code);
 			setSuccess("Department removed successfully.");
 			setRemoveDepartmentData({ code: "" });
 			fetchDepartments();
@@ -136,7 +136,7 @@ const AdminDashboard = () => {
 	};
 	const fetchDepartments = async () => {
 		try {
-			const response = await api.get("/api/admin/departments/");
+			const response = await api.get("/api/admin/getdepartments/");
 			setDepartments(response.data);
 		} catch (error) {
 			setError("Failed to fetch departments. Please try again later.");

@@ -9,6 +9,7 @@ const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading, departmen
 					name='code'
 					id=''
 					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
+					onChange={onChange}
 				>
 					<option
 						value=''
