@@ -16,7 +16,7 @@ const AddDepartmentForm = ({ formData, onChange, onSubmit, loading }) => {
 			</label>
 			<div className='grid gap-4 sm:grid-cols-2'>
 				<label className='space-y-1 text-sm font-medium text-slate-700'>
-					Department Username
+					Department Email
 					<input
 						className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
 						name='username'

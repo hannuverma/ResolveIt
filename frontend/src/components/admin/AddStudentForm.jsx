@@ -5,7 +5,7 @@ const AddStudentForm = ({ formData, onChange, onSubmit, loading }) => {
 		<form className='space-y-4' onSubmit={onSubmit}>
 			<div className='grid gap-4 sm:grid-cols-2'>
 				<label className='space-y-1 text-sm font-medium text-slate-700'>
-					Username
+					Student Email
 					<input
 						className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-blue-500 focus:outline-none'
 						name='username'
