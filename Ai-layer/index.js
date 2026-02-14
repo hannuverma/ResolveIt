@@ -20,22 +20,36 @@ async function callModel(state) {
 	if (!complaint) {
 		return fallbackResponse();
 	}
-
 	const response = await llmWithTools.invoke([
 		{ role: "system", content: AISystemPrompt },
 		{ role: "user", content: complaint },
 	]);
 
-	if (!response?.content) {
-		return fallbackResponse();
+	if (response.tool_calls?.length) {
+
+		const toolCall = response.tool_calls[0];
+
+		if (toolCall.name === "get_departments") {
+			const toolResult = await getDepartmentsTool.invoke(toolCall.args);
+
+			// Send tool response BACK to model
+			const finalResponse = await llmWithTools.invoke([
+				{ role: "system", content: AISystemPrompt },
+				{ role: "user", content: complaint },
+				response,
+				{
+					role: "tool",
+					tool_call_id: toolCall.id,
+					content: JSON.stringify(toolResult),
+				},
+			]);
+
+			return JSON.parse(finalResponse.content);
+		}
 	}
 
-	try {
-		return JSON.parse(response.content);
-	} catch (err) {
-		console.log("Error parsing AI response → Using fallback", err);
-		return fallbackResponse();
-	}
+	return JSON.parse(response.content);
+
 }
 
 function fallbackResponse() {
