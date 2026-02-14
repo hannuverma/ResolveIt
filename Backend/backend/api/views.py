@@ -31,22 +31,57 @@ class CreateUserView(generics.CreateAPIView):
             user.save()
 
 @api_view(['DELETE'])
-def removeStudent(request, username):
+def removeStudent(request, identifier):
+    # Allow deleting by roll_no or username
     try:
-        student = User.objects.get(username=username, role='STUDENT')
+        # Prefer username match
+        student = None
+        try:
+            student = User.objects.get(username=identifier, role='STUDENT')
+        except User.DoesNotExist:
+            student = None
+
+        if not student:
+            student = User.objects.get(roll_no=identifier, role='STUDENT')
+
         student.delete()
         return Response({"message": "Student removed successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
     
 @api_view(['DELETE'])
-def removeDepartment(request, username):
+def removeDepartment(request, identifier):
+    # Allow deleting by department code, or by linked department user username
     try:
-        department = Department.objects.get(username=username)
-        department.delete()
+        dept = None
+        # Try code match first
+        try:
+            dept = Department.objects.get(code=identifier)
+        except Department.DoesNotExist:
+            dept = None
+
+        # Try linked user username
+        if not dept:
+            try:
+                dept = Department.objects.get(user__username=identifier)
+            except Department.DoesNotExist:
+                dept = None
+
+        # Try name match as last resort
+        if not dept:
+            try:
+                dept = Department.objects.get(name=identifier)
+            except Department.DoesNotExist:
+                dept = None
+
+        if not dept:
+            return Response({"error": "Department not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        dept.delete()
         return Response({"message": "Department removed successfully"}, status=status.HTTP_200_OK)
-    except Department.DoesNotExist:
-        return Response({"error": "Department not found"}, status=status.HTTP_404_NOT_FOUND)
+    except Exception:
+        traceback.print_exc()
+        return Response({"error": "Failed to remove department"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])

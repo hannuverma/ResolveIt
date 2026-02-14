@@ -8,8 +8,8 @@ urlpatterns = [
     path('complaints/<int:complaint_id>/feedback/', views.handle_feedback, name='complaint-feedback'),
     path('departments/<int:department_id>/points/', views.getDepartmentPoints, name='department-points'),
     path('admin/addstudents/', views.CreateUserView.as_view(), name='add-student'),
-    path('admin/removestudents/<str:roll_no>/', views.removeStudent, name='remove-student'),
+    path('admin/removestudents/<str:identifier>/', views.removeStudent, name='remove-student'),
     path('admin/adddepartments/', views.addDepartment, name='add-department'),
-    path('admin/removedepartments/<str:code>/', views.removeDepartment, name='remove-department'),
+    path('admin/removedepartments/<str:identifier>/', views.removeDepartment, name='remove-department'),
     path('admin/getdepartments/', views.getAllDepartments, name='get-departments'),
 ]
