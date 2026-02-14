@@ -31,18 +31,18 @@ class CreateUserView(generics.CreateAPIView):
             user.save()
 
 @api_view(['DELETE'])
-def removeStudent(request, roll_no):
+def removeStudent(request, username):
     try:
-        student = User.objects.get(roll_no=roll_no, role='STUDENT')
+        student = User.objects.get(username=username, role='STUDENT')
         student.delete()
         return Response({"message": "Student removed successfully"}, status=status.HTTP_200_OK)
     except User.DoesNotExist:
         return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
     
 @api_view(['DELETE'])
-def removeDepartment(request, code):
+def removeDepartment(request, username):
     try:
-        department = Department.objects.get(code=code)
+        department = Department.objects.get(username=username)
         department.delete()
         return Response({"message": "Department removed successfully"}, status=status.HTTP_200_OK)
     except Department.DoesNotExist:

@@ -20,7 +20,6 @@ const AdminDashboard = () => {
 	});
 	const [removeStudentData, setRemoveStudentData] = useState({
 		email: "",
-		roll_no: "",
 	});
 	const [addDepartmentData, setAddDepartmentData] = useState({
 		department_name: "",
@@ -29,7 +28,6 @@ const AdminDashboard = () => {
 		code: "",
 	});
 	const [removeDepartmentData, setRemoveDepartmentData] = useState({
-		code: "",
 		email: "",
 	});
 
@@ -79,7 +77,7 @@ const AdminDashboard = () => {
 			);
 
 			setSuccess("Student removed successfully.");
-			setRemoveStudentData({ email: "", roll_no: "" });
+			setRemoveStudentData({ email: ""});
 		} catch (error) {
 			setError(
 				"Failed to remove student. Please check the details and try again.",
@@ -124,7 +122,7 @@ const AdminDashboard = () => {
 				`/api/admin/removedepartments/${removeDepartmentData.email}/`,
 			);
 			setSuccess("Department removed successfully.");
-			setRemoveDepartmentData({ code: "", email: "" });
+			setRemoveDepartmentData({ email: "" });
 			fetchDepartments();
 		} catch (error) {
 			setError(
@@ -223,9 +221,7 @@ const AdminDashboard = () => {
 						<RemoveDepartmentForm
 							formData={removeDepartmentData}
 							onChange={(event) => {
-								console.log("Field changed:", event.target
-									
-								);
+								console.log("Field changed:", event.target.name);
 								setRemoveDepartmentData((prev) => ({
 									...prev,
 									[event.target.name]: event.target.value,
