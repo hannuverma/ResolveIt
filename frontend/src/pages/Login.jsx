@@ -50,7 +50,7 @@ const Login = () => {
 			const profileData = await fetchProfile();
 			if (profileData.role === "DEPT" || profileData.role === "ADMIN") {
 				setSuccess("");
-				setError("Department must use the department login page.");
+				setError("Invalid login credentials.");
 				localStorage.clear();
 				return;
 			} else {

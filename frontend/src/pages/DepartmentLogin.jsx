@@ -44,12 +44,11 @@ const DepartmentLogin = () => {
 			// fetching profile
 			const fetchProfile = async () => {
 				const profile = await api.get("/api/profile/");
-				console.log("Fetched student profile:", profile.data);
 				return profile.data;
 			};
 			const profileData = await fetchProfile();
 			if (profileData.role === "STUDENT") {
-				setError("Student must use the student login page.");
+				setError("Invalid login credentials.");
 				localStorage.clear();
 				return;
 			} else if (profileData.role === "ADMIN") {
