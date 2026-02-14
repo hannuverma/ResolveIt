@@ -117,11 +117,11 @@ const AdminDashboard = () => {
 		event.preventDefault();
 		resetAlerts();
 		setLoadingAction("removeDepartment");
+		console.log("Department code to remove:", removeDepartmentData);
 		try {
 			await api.delete(
 				`/api/admin/removedepartments/${removeDepartmentData.code}/`,
 			);
-			console.log("Department code to remove:", removeDepartmentData.code);
 			setSuccess("Department removed successfully.");
 			setRemoveDepartmentData({ code: "" });
 			fetchDepartments();
