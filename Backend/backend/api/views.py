@@ -98,6 +98,7 @@ def addDepartment(request):
     name = request.data.get('department_name')
     username = request.data.get('username')
     password = request.data.get('password')
+    description = request.data.get('description')
     code = request.data.get('code')  # Optional code for student invitations
     
     if not name:
@@ -118,7 +119,7 @@ def addDepartment(request):
             dept, created = Department.objects.get_or_create(
                 name=name,
                 college=college,
-                defaults={'reward_points': 0, 'code': code}
+                defaults={'reward_points': 0, 'code': code, 'description': description}
             )
 
             # If department user doesn't exist or department has no linked user, create and attach
@@ -216,7 +217,7 @@ def handle_feedback(request, complaint_id):
 
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
-            # Save while manually passing the complaint object
+            # Save while manually passing the complaint oFbject
             serializer.save(complaint=complaint)
             process_complaint_rating(complaint) # Handle points after saving feedback
             return Response(serializer.data, status=status.HTTP_201_CREATED)

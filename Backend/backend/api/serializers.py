@@ -29,7 +29,7 @@ class departmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Department
-        fields = ['id', 'name', 'reward_points', 'college', 'code', 'user']
+        fields = ['id', 'name', 'reward_points', 'college', 'code', 'user', 'description']
         read_only_fields = ['id']
 
     def get_user(self, obj):
