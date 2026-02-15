@@ -281,7 +281,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
 
         
         except requests.RequestException:
-            print("AI request failed")
+            print("AI request failed", traceback.format_exc())
             
 
         # Resolve department by department-user username first (department usernames are unique),
