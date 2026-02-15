@@ -98,20 +98,24 @@ def run_daily_penalties(request):
 @api_view(['POST'])
 def addDepartment(request):
     name = request.data.get('department_name')
-    username = request.data.get('username')
     password = request.data.get('password')
     description = request.data.get('description')
     code = request.data.get('code')  # Optional code for student invitations
     
     if not name:
         return Response({"error": "Department name is required"}, status=status.HTTP_400_BAD_REQUEST)
-    if not username or not password:
-        return Response({"error": "Username and password are required"}, status=status.HTTP_400_BAD_REQUEST)
+    if not password:
+        return Response({"error": "Password is required"}, status=status.HTTP_400_BAD_REQUEST)
     
     # Auto-assign the admin's college if authenticated
     college = None
     if request.user.is_authenticated and request.user.college:
         college = request.user.college
+    
+    # Generate username from department name and college name
+    # Format: name@collegename.com (e.g., "computerscience@iit.com")
+    college_name = college.name.lower().replace(' ', '') if college and college.name else 'college'
+    username = f"{name.lower().replace(' ', '')}@{college_name}.com"
     
     # Create department
     from django.db import transaction
@@ -125,7 +129,7 @@ def addDepartment(request):
             )
 
             # If department user doesn't exist or department has no linked user, create and attach
-            if username and password:
+            if password:
                 user_qs = User.objects.filter(username=username, college=college)
                 if user_qs.exists():
                     dept_user = user_qs.first()
@@ -294,7 +298,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
                 raise ValidationError({
                     "detail": "You have already submitted a similar complaint",
                     "complaint_id": existing_complaint.id
-                })                
+                })        
             else:
                 existing_complaint = Complaint.objects.filter(similarity_hash=similarity_hash).first()
                 print("Found existing complaint with same similarity hash:", existing_complaint.id)
