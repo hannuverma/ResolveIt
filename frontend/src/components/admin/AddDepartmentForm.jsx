@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 
-const AddDepartmentForm = ({ formData, onChange, onSubmit, loading, departments }) => {
+const AddDepartmentForm = ({
+	formData,
+	onChange,
+	onSubmit,
+	loading,
+	departments,
+}) => {
 	const [customValidity, setCustomValidity] = useState("");
 	const checkduplicate = (event) => {
 		const code = event.target.value;
-		const isDuplicate = departments.some(dept => dept.code === code);
+		const isDuplicate = departments.some((dept) => dept.code === code);
 		if (isDuplicate) {
 			event.target.setCustomValidity("Department code already exists.");
 			setCustomValidity("Department code already exists.");
@@ -51,10 +57,10 @@ const AddDepartmentForm = ({ formData, onChange, onSubmit, loading, departments 
 						required
 					/>
 				</label>
-				<label className='space-y-1 text-sm font-medium text-slate-700'>
+				<label className='space-y-1 col-span-2 flex flex-col text-sm font-medium text-slate-700'>
 					Department Code
 					<input
-						className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
+						className=' rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
 						name='code'
 						type='text'
 						value={formData.code}
@@ -65,9 +71,27 @@ const AddDepartmentForm = ({ formData, onChange, onSubmit, loading, departments 
 						placeholder='Set a code for department'
 						required
 					/>
-					{customValidity && <p className="text-red-600 text-sm">{customValidity}</p>}
+					{customValidity && (
+						<p className='text-red-600 text-sm'>{customValidity}</p>
+					)}
 				</label>
 			</div>
+			<label className='space-y-1 text-sm font-medium text-slate-700'>
+				Description
+				<textarea
+					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
+					name='description'
+					value={formData.description || ""}
+					onChange={onChange}
+					placeholder='Short description of the department...'
+					rows='3'
+					maxLength={1000}
+					required
+				/>
+				<p className='text-xs text-slate-500'>
+					{(formData.description || "").length}/1000 characters
+				</p>
+			</label>
 			<button
 				className='w-full rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-400 mt-1.5 cursor-pointer'
 				type='submit'

@@ -26,6 +26,7 @@ const AdminDashboard = () => {
 		username: "",
 		password: "",
 		code: "",
+		description: "",
 	});
 	const [removeDepartmentData, setRemoveDepartmentData] = useState({
 		email: "",
@@ -77,7 +78,7 @@ const AdminDashboard = () => {
 			);
 
 			setSuccess("Student removed successfully.");
-			setRemoveStudentData({ email: ""});
+			setRemoveStudentData({ email: "" });
 		} catch (error) {
 			setError(
 				"Failed to remove student. Please check the details and try again.",
@@ -99,6 +100,7 @@ const AdminDashboard = () => {
 				username: "",
 				password: "",
 				code: "",
+				description: "",
 			});
 			setSuccess("Department added successfully.");
 			fetchDepartments();
