@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
@@ -14,11 +14,12 @@ from .models import User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets, status
-from .services import add_department_points, apply_unresolved_penalties, process_complaint_rating
+from .services import add_department_points, apply_unresolved_penalties, process_complaint_rating, get_group_average_rating
 from rest_framework.decorators import api_view
 import requests
 from dotenv import load_dotenv
 import os
+from django.db.models import Avg
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -97,6 +98,7 @@ def addDepartment(request):
     name = request.data.get('department_name')
     username = request.data.get('username')
     password = request.data.get('password')
+    description = request.data.get('description')
     code = request.data.get('code')  # Optional code for student invitations
     
     if not name:
@@ -117,7 +119,7 @@ def addDepartment(request):
             dept, created = Department.objects.get_or_create(
                 name=name,
                 college=college,
-                defaults={'reward_points': 0, 'code': code}
+                defaults={'reward_points': 0, 'code': code, 'description': description}
             )
 
             # If department user doesn't exist or department has no linked user, create and attach
@@ -174,12 +176,32 @@ def handle_feedback(request, complaint_id):
     # GET: Retrieve feedback
     if request.method == 'GET':
         try:
-            feedback = Feedback.objects.get(complaint_id=complaint_id)
-            serializer = FeedbackSerializer(feedback)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Feedback.DoesNotExist:
-            return Response({'error': 'Feedback not found'}, status=status.HTTP_404_NOT_FOUND)
+            complaint = Complaint.objects.get(id=complaint_id)
+        except Complaint.DoesNotExist:
+            return Response({'error': 'Complaint not found'}, status=status.HTTP_404_NOT_FOUND)
 
+        # GROUP AVERAGE
+        data = (
+            Complaint.objects
+            .filter(
+                similarity_hash=complaint.similarity_hash,
+                assigned_department=complaint.assigned_department,
+                feedback__isnull=False
+            )
+            .aggregate(
+                average=Avg('feedback__rating'),
+            )
+        )
+
+
+
+        if data['average'] is None:
+            return Response({'error': 'No feedback yet'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response({
+            "rating": round(data['average']),
+        }, status=status.HTTP_200_OK)
+    
     # POST: Create feedback
     elif request.method == 'POST':
         try:
@@ -195,7 +217,7 @@ def handle_feedback(request, complaint_id):
 
         serializer = FeedbackSerializer(data=request.data)
         if serializer.is_valid():
-            # Save while manually passing the complaint object
+            # Save while manually passing the complaint oFbject
             serializer.save(complaint=complaint)
             process_complaint_rating(complaint) # Handle points after saving feedback
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -215,11 +237,12 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         elif self.request.user.role == 'DEPT':
             return Complaint.objects.filter(
                 assigned_department=self.request.user.department,
-                student__college=self.request.user.college
+                student__college=self.request.user.college,
+                repeated_complaint=False
             )
         
         elif self.request.user.role == 'ADMIN':
-            return Complaint.objects.all()
+            return Complaint.objects.filter(student__college=self.request.user.college, repeated_complaint=False)
         
         return super().get_queryset()
 
@@ -250,11 +273,39 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             title = data.get("title")
             priority = data.get("priority")
             similarity_hash = data.get("similarity_hash")
+
+        
         except requests.RequestException:
             print("AI request failed")
+            
 
         # Resolve department by department-user username first (department usernames are unique),
         # then fall back to name lookups/creation to avoid MultipleObjectsReturned.
+        repeated = False
+        
+        if Complaint.objects.filter(similarity_hash=similarity_hash).exists():
+            if Complaint.objects.filter(student__college=self.request.user.college).exists():
+                repeated = True
+            if Complaint.objects.filter(similarity_hash=similarity_hash, student=self.request.user, student__college=self.request.user.college).exists():
+                existing_complaint = Complaint.objects.filter(similarity_hash=similarity_hash, student=self.request.user, student__college=self.request.user.college).first()
+                return Response({"error": "You have already submitted a similar complaint", "complaint_id": existing_complaint.id}, status=status.HTTP_400_BAD_REQUEST)
+                
+            else:
+                existing_complaint = Complaint.objects.filter(similarity_hash=similarity_hash).first()
+                print("Found existing complaint with same similarity hash:", existing_complaint.id)
+                if existing_complaint.status != Complaint.Status.RESOLVED and existing_complaint.student.username != self.request.user.username:
+                    existing_complaint.times_reported += 1
+                    
+                    print("reported by different student")
+                    if existing_complaint.times_reported >= 7 and existing_complaint.status != 'RESOLVED':
+                        existing_complaint.priority = 'HIGH'
+
+                    elif existing_complaint.times_reported >= 4 and existing_complaint.status != 'RESOLVED':
+                        existing_complaint.priority = 'MEDIUM'
+                    priority = existing_complaint.priority
+                    existing_complaint.save()
+
+            
         if dept_name:
             department = None
             try:
@@ -281,8 +332,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
 
 
         if not priority:
-            priority = "MEDIUM"
-
+            priority = "LOW"
 
         serializer.save(
             student=self.request.user,
@@ -290,6 +340,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             title=title,
             priority=priority,
             similarity_hash=similarity_hash,
+            repeated_complaint=repeated,
             status=Complaint.Status.PENDING if department else Complaint.Status.PENDING
         )
 
@@ -342,6 +393,38 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
+
+    def perform_update(self, serializer):
+        # Override to cascade RESOLVED status to complaints with the same similarity_hash
+        instance = serializer.instance
+        old_status = instance.status
+
+        # Save the instance first
+        with transaction.atomic():
+            super().perform_update(serializer)
+
+            # After save, if the status changed to RESOLVED and the updater is dept/admin, cascade
+            new_status = serializer.instance.status
+            try:
+                updater = self.request.user
+            except Exception:
+                updater = None
+
+            if old_status != Complaint.Status.RESOLVED and new_status == Complaint.Status.RESOLVED:
+                # Only cascade when updated by department staff or admin
+                if updater and getattr(updater, 'role', None) in ("DEPT", "ADMIN"):
+                    sim_hash = serializer.instance.similarity_hash
+                    if sim_hash:
+                        # Update all other complaints with same similarity_hash to RESOLVED
+                        related_qs = Complaint.objects.filter(similarity_hash=sim_hash).exclude(id=serializer.instance.id)
+                        # Optionally restrict to same department if you want:
+                        # related_qs = related_qs.filter(assigned_department=serializer.instance.assigned_department)
+                        now = timezone.now()
+                        for c in related_qs:
+                            if c.status != Complaint.Status.RESOLVED:
+                                c.status = Complaint.Status.RESOLVED
+                                c.resolved_at = now
+                                c.save()
     
         
 @api_view(['GET'])

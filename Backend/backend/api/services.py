@@ -7,7 +7,24 @@ import math
 from .models import DepartmentPointTransaction, Complaint
 import requests
 from django.conf import settings
+from django.db.models import Avg
 
+
+def get_group_average_rating(complaint):
+    if not complaint.similarity_hash:
+        return None
+
+    avg_rating = (
+        Complaint.objects
+        .filter(
+            similarity_hash=complaint.similarity_hash,
+            assigned_department=complaint.assigned_department,
+            feedback__isnull=False
+        )
+        .aggregate(avg=Avg('feedback__rating'))
+    )['avg']
+
+    return avg_rating
 
 
 @transaction.atomic
@@ -37,6 +54,11 @@ def handle_review_points(complaint):
     try:
         feedback = complaint.feedback
     except:
+        return
+
+    # If complaint is part of a group (has similarity_hash), skip individual points
+    # Group review will be handled by handle_group_review_points()
+    if complaint.similarity_hash:
         return
 
     rating = feedback.rating
@@ -139,5 +161,71 @@ def apply_unresolved_penalties():
 
 def process_complaint_rating(complaint):
 
-    handle_review_points(complaint)
     handle_speed_bonus(complaint)
+    # Handle grouped review aggregation (same similarity_hash)
+    try:
+        handle_group_review_points(complaint)
+    except Exception:
+        pass
+
+
+@transaction.atomic
+def handle_group_review_points(complaint):
+    sim_hash = complaint.similarity_hash
+    department = complaint.assigned_department
+
+    if not sim_hash or not department:
+        return
+
+    avg_rating = (
+        Complaint.objects
+        .filter(
+            similarity_hash=sim_hash,
+            assigned_department=department,
+            feedback__isnull=False
+        )
+        .aggregate(avg=Avg('feedback__rating'))
+    )['avg']
+
+    if avg_rating is None:
+        return
+
+    rounded = round(avg_rating)
+
+    rating_points = {
+        5: 20,
+        4: 15,
+        3: 5,
+        2: -10,
+        1: -20
+    }
+
+    new_points = rating_points.get(rounded, 0)
+
+    tx = DepartmentPointTransaction.objects.filter(
+        department=department,
+        transaction_type="REVIEW",
+        complaint__similarity_hash=sim_hash
+    ).first()
+
+    if tx:
+        delta = new_points - tx.points
+        if delta == 0:
+            return
+
+        tx.points = new_points
+        tx.complaint = complaint
+        tx.save()
+
+        department.reward_points = F('reward_points') + delta
+        department.save(update_fields=['reward_points'])
+
+    else:
+        DepartmentPointTransaction.objects.create(
+            department=department,
+            complaint=complaint,
+            points=new_points,
+            transaction_type="REVIEW"
+        )
+        department.reward_points = F('reward_points') + new_points
+        department.save(update_fields=['reward_points'])

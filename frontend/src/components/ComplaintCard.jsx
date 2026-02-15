@@ -103,14 +103,13 @@ const ComplaintCard = ({
 			</div>
 
 			{/* Feedback Display */}
-			{complaint.feedback && (
+			{complaint.group_average_rating && (
 				<div className='mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg'>
 					<p className='text-sm text-blue-700 font-medium mb-1'>
 						Department Feedback
 					</p>
-					<p className='text-gray-700'>{complaint.feedback.review_text}</p>
 					<p className='text-xs text-gray-500 mt-2'>
-						Rating: {complaint.feedback.rating}/5 ⭐
+						Rating: {complaint.group_average_rating !== null && complaint.group_average_rating !== undefined ? complaint.group_average_rating : complaint.group_average_rating}/5 ⭐
 					</p>
 				</div>
 			)}
