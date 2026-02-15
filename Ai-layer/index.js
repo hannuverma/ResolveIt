@@ -16,26 +16,33 @@ const llmWithTools = llm.bindTools([getDepartmentsTool]);
 
 async function callModel(state) {
 	const complaint = state.messages[state.messages.length - 1].content;
+	const college = state.college;
 
-	if (!complaint) {
+	if (!complaint || !college) {
 		return fallbackResponse();
 	}
-	const response = await llmWithTools.invoke([
+
+	const messages = [
 		{ role: "system", content: AISystemPrompt },
-		{ role: "user", content: complaint },
-	]);
+		{
+			role: "user",
+			content: `Complaint: ${complaint}\nCollege: ${college}`,
+		},
+	];
 
+	const response = await llmWithTools.invoke(messages);
+
+	// ✅ TOOL HANDLING PHASE
 	if (response.tool_calls?.length) {
-
 		const toolCall = response.tool_calls[0];
 
 		if (toolCall.name === "get_departments") {
-			const toolResult = await getDepartmentsTool.invoke(toolCall.args);
+			const toolResult = await getDepartmentsTool.invoke({
+				college,
+			});
 
-			// Send tool response BACK to model
 			const finalResponse = await llmWithTools.invoke([
-				{ role: "system", content: AISystemPrompt },
-				{ role: "user", content: complaint },
+				...messages,
 				response,
 				{
 					role: "tool",
@@ -49,8 +56,8 @@ async function callModel(state) {
 	}
 
 	return JSON.parse(response.content);
-
 }
+
 
 function fallbackResponse() {
 	return {

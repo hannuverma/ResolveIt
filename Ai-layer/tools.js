@@ -1,19 +1,38 @@
 import { tool } from "@langchain/core/tools";
+import axios from "axios";
 
 export const getDepartmentsTool = tool(
-	async () => {
+	async ({ college }) => {
+		const normalizedCollege = college.toLowerCase().replace(/\s+/g, "");
+		// console.log("Tool Call → get_departments", normalizedCollege);
+
 		try {
-			const response = await fetch("http://localhost:8000/api/departments/");
-			const data = await response.json();
-			return data;
+			const response = await axios.get(
+				"http://localhost:8000/api/admin/getdepartments/?username=" + normalizedCollege,
+			);
+			console.log("Tool Response → get_departments", response.data);
+			return response.data;
 		} catch (error) {
 			console.error("Error fetching departments:", error);
-			return { departments: [] };
+
+			return {
+				departments: [],
+			};
 		}
 	},
 	{
 		name: "get_departments",
 		description:
-			"Returns list of campus departments and their responsibilities",
+			"Returns list of campus departments and their responsibilities for a given college",
+		schema: {
+			type: "object",
+			properties: {
+				college: {
+					type: "string",
+					description: "Name of the college or university",
+				},
+			},
+			required: ["college"],
+		},
 	},
 );
