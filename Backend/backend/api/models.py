@@ -14,7 +14,7 @@ class College(models.Model):
         return f"{self.name} - {self.code if self.code else 'No Code'}"
 
 class Department(models.Model):
-    college = models.ForeignKey(College, on_delete=models.CASCADE, default=None, null=True, blank=True)
+    college = models.ForeignKey(College, on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='departments')
     # Link to the department's user account (if this department has a login)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, related_name='department_account')
     name = models.CharField(max_length=100)
@@ -67,6 +67,8 @@ class Complaint(models.Model):
         RESOLVED = 'RESOLVED', 'Resolved'
         CLOSED = 'CLOSED', 'Closed by Student'
 
+
+    college = models.ForeignKey(College, on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='complaints')
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='complaints')
     title = models.CharField(max_length=200, default='No Title', blank=True)
     similarity_hash = models.TextField(null=True, blank=True)
@@ -84,8 +86,12 @@ class Complaint(models.Model):
         if self.status == self.Status.RESOLVED and self.resolved_at is None:
             self.resolved_at = timezone.now()
 
+        if not self.college and self.student:
+            self.college = self.student.college
+
         elif self.status != 'RESOLVED':
             self.resolved_at = None
+
         super().save(*args, **kwargs)
         
 
