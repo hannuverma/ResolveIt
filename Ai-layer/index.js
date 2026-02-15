@@ -19,6 +19,7 @@ async function callModel(state) {
 	const college = state.college;
 
 	if (!complaint || !college) {
+		console.log("Missing complaint description or college information.");
 		return fallbackResponse();
 	}
 

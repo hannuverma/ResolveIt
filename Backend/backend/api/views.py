@@ -268,8 +268,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             load_dotenv()  # Load environment variables from .env file
             ai_response = requests.post(
                 os.getenv("AI_LAYER_API"),
-                json={"description": description},
-                timeout=5
+                json={"description": description, "college": self.request.user.college.name if getattr(self.request.user, 'college', None) else None},
             )
             ai_response.raise_for_status()
 
@@ -288,7 +287,9 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         # Resolve department by department-user username first (department usernames are unique),
         # then fall back to name lookups/creation to avoid MultipleObjectsReturned.
         repeated = False
-        
+        print ("Checking for existing complaints with similarity hash:", similarity_hash)
+        print ("Complaint description:", description)
+        print ("AI response - Dept:", dept_name, "Title:", title, "Priority:", priority)
         if Complaint.objects.filter(similarity_hash=similarity_hash).exists():
             if Complaint.objects.filter(student__college=self.request.user.college).exists():
                 repeated = True
@@ -303,7 +304,10 @@ class ComplaintViewSet(viewsets.ModelViewSet):
                 existing_complaint = Complaint.objects.filter(similarity_hash=similarity_hash).first()
                 print("Found existing complaint with same similarity hash:", existing_complaint.id)
                 if existing_complaint.status != Complaint.Status.RESOLVED and existing_complaint.student.username != self.request.user.username:
-                    existing_complaint.times_reported += 1
+                    if timezone.now() - existing_complaint.created_at < timezone.timedelta(minutes=3):
+                        existing_complaint.times_reported += 0.2
+                    else:
+                        existing_complaint.times_reported += 1  # reset count if last report was long ago
                     
                     print("reported by different student")
                     if existing_complaint.times_reported >= 7 and existing_complaint.status != 'RESOLVED':

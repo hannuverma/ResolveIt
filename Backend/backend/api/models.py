@@ -80,7 +80,7 @@ class Complaint(models.Model):
     resolved_at = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=10, choices=[('LOW', 'Low'), ('MEDIUM', 'Medium'), ('HIGH', 'High')], default='MEDIUM')
     repeated_complaint = models.BooleanField(default=False)  # Flag to indicate if this is a repeated complaint
-    times_reported = models.IntegerField(default=1)  # For tracking how many times a similar complaint has been reported
+    times_reported = models.FloatField(default=1)  # For tracking how many times a similar complaint has been reported
 
     def save(self, *args, **kwargs):
         if self.status == self.Status.RESOLVED and self.resolved_at is None:
