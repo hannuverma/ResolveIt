@@ -110,14 +110,22 @@ If severity unclear → Default LOW.
 --------------------------------------------------
 
 "department"
-Must be EXACTLY one of:
 
-- "Plumbing Department"
-- "Electrical Department"
-- "Sanitation Department"
-- "Civil / Infrastructure Department"
+Department assignment MUST strictly use departments returned by the get_departments tool.
 
-Department mapping logic:
+You are NOT allowed to invent, modify, or create new department names.
+
+You MUST select ONLY from department names returned by the tool.
+
+Use department descriptions to determine semantic responsibility.
+
+If no department matches the complaint category or meaning,
+return department as an empty string "".
+If departments list is empty, return department as "".
+Do NOT guess.
+
+
+Department mapping logic: - learn it using the tool data, not assumptions. For example:
 
 Plumbing Department → Water Management issues  
 Electrical Department → Electricity issues  
