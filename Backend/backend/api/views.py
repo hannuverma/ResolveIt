@@ -20,6 +20,8 @@ import requests
 from dotenv import load_dotenv
 import os
 from django.db.models import Avg
+from rest_framework.exceptions import ValidationError
+
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -59,7 +61,7 @@ def removeDepartment(request, identifier):
         dept = None
         # Try code match first
         try:
-            dept = Department.objects.get(code=identifier)
+            dept = Department.objects.get(code=identifier, college=request.user.college)
         except Department.DoesNotExist:
             dept = None
 
@@ -288,8 +290,11 @@ class ComplaintViewSet(viewsets.ModelViewSet):
                 repeated = True
             if Complaint.objects.filter(similarity_hash=similarity_hash, student=self.request.user, student__college=self.request.user.college).exists():
                 existing_complaint = Complaint.objects.filter(similarity_hash=similarity_hash, student=self.request.user, student__college=self.request.user.college).first()
-                return Response({"error": "You have already submitted a similar complaint", "complaint_id": existing_complaint.id}, status=status.HTTP_400_BAD_REQUEST)
-                
+                print("Found existing complaint by same student with same similarity hash:", existing_complaint.id)
+                raise ValidationError({
+                    "detail": "You have already submitted a similar complaint",
+                    "complaint_id": existing_complaint.id
+                })                
             else:
                 existing_complaint = Complaint.objects.filter(similarity_hash=similarity_hash).first()
                 print("Found existing complaint with same similarity hash:", existing_complaint.id)
@@ -322,10 +327,10 @@ class ComplaintViewSet(viewsets.ModelViewSet):
                 except Exception:
                     department = None
 
-            # Fallback: any department with that name
-            if not department:
-                department = Department.objects.filter(name=dept_name).first()
-
+            department = Department.objects.filter(
+                                                    name=dept_name,
+                                                    college=self.request.user.college
+                                                   ).first()
             # If still not found, create one (attach to student's college when available)
             if not department:
                 department = Department.objects.create(name=dept_name, college=(self.request.user.college if getattr(self.request.user, 'college', None) else None))
