@@ -10,7 +10,6 @@ export const getDepartmentsTool = tool(
 			const response = await axios.get(
 				"http://localhost:8000/api/admin/getdepartments/?username=" + normalizedCollege,
 			);
-			console.log("Tool Response → get_departments", response.data);
 			return response.data;
 		} catch (error) {
 			console.error("Error fetching departments:", error);

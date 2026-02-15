@@ -54,7 +54,7 @@ async function callModel(state) {
 			return JSON.parse(finalResponse.content);
 		}
 	}
-
+	console.log(response.content);
 	return JSON.parse(response.content);
 }
 
