@@ -51,7 +51,6 @@ async function callModel(state) {
 					content: JSON.stringify(toolResult),
 				},
 			]);
-			console.log("Final AI Response with Tool Result:", finalResponse.content);
 			return JSON.parse(finalResponse.content);
 		}
 	}
