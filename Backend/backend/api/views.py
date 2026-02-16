@@ -101,6 +101,7 @@ def addDepartment(request):
     password = request.data.get('password')
     description = request.data.get('description')
     code = request.data.get('code')  # Optional code for student invitations
+    username = request.data.get('username') 
     
     if not name:
         return Response({"error": "Department name is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -114,8 +115,6 @@ def addDepartment(request):
     
     # Generate username from department name and college name
     # Format: name@collegename.com (e.g., "computerscience@iit.com")
-    college_name = college.name.lower().replace(' ', '') if college and college.name else 'college'
-    username = f"{name.lower().replace(' ', '')}@{college_name}.com"
     
     # Create department
     from django.db import transaction

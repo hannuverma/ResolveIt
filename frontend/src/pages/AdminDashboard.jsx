@@ -213,6 +213,7 @@ const AdminDashboard = () => {
 							onSubmit={handleAddDepartment}
 							loading={loadingAction === "addDepartment"}
 							departments={departments}
+							collegeName={adminProfile?.college_name}
 						/>
 					</AdminFormCard>
 
