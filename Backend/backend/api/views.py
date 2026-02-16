@@ -286,7 +286,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         print ("Complaint description:", description)
         print ("AI response - Dept:", dept_name, "Title:", title, "Priority:", priority)
         if dept_name == '':
-            dept_name = "Civil/Infrastructure Department" # default department if AI fails to classify
+            dept_name = "Civil / Infrastructure Department" # default department if AI fails to classify
         if Complaint.objects.filter(similarity_hash=similarity_hash).exists():
             if Complaint.objects.filter(student__college=self.request.user.college).exists():
                 repeated = True

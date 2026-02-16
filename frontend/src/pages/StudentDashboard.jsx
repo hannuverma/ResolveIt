@@ -85,7 +85,7 @@ const StudentDashboard = () => {
 						<p className='text-red-700 font-medium'>{error}</p>
 					</div>
 				)}
-				{/* Global Messages */}
+				{/* Admin Notifications */}
 				{alerts && alerts.length !== 0 && (
 					<>
 					<h2 className="capitalize text-yellow-700 text-xl font-">notifications from admin ⚠️</h2>
