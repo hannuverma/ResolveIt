@@ -4,10 +4,23 @@ from django.db.models import Avg
 
 
 class alertSerializer(serializers.ModelSerializer):
+    created_at_formatted = serializers.SerializerMethodField()
+    estimated_resolution_time_formatted = serializers.SerializerMethodField()
+
     class Meta:
         model = AlertMessage
-        fields = ['id', 'college', 'message', 'created_at', 'estimated_resolution_time']
+        fields = ['id', 'college', 'message', 'created_at', 'estimated_resolution_time', 'created_at_formatted', 'estimated_resolution_time_formatted']
         read_only_fields = ['id', 'created_at']
+
+    def get_created_at_formatted(self, obj):
+        if obj.created_at:
+            return obj.created_at.strftime('%B %d, %Y at %I:%M %p')
+        return None
+
+    def get_estimated_resolution_time_formatted(self, obj):
+        if obj.estimated_resolution_time:
+            return obj.estimated_resolution_time.strftime('%B %d, %Y at %I:%M %p')
+        return None
 
 class StudentGridSerializer(serializers.ModelSerializer):
     class Meta:
