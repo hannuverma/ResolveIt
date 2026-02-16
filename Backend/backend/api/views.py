@@ -8,8 +8,8 @@ from rest_framework import status
 from django.db import transaction
 import traceback
 from django.contrib.auth import authenticate, login as django_login
-from .serializers import StudentGridSerializer, ComplaintSerializer, FeedbackSerializer, departmentSerializer, DepartmentPointTransactionSerializer
-from .models import Complaint, DepartmentPointTransaction, Feedback, Department
+from .serializers import StudentGridSerializer, ComplaintSerializer, FeedbackSerializer, departmentSerializer, DepartmentPointTransactionSerializer, alertSerializer
+from .models import Complaint, DepartmentPointTransaction, Feedback, Department, AlertMessage
 from .models import User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -431,7 +431,26 @@ class ComplaintViewSet(viewsets.ModelViewSet):
                                 c.resolved_at = now
                                 c.save()
     
-        
+@api_view(['POST', 'GET'])
+def createAlert(request):
+    if request.method == 'POST':
+        message = request.data.get('message')
+
+        if not request.user.college or not message:
+            return Response({"error": "Both 'college' and 'message' are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.user.role != 'ADMIN':
+            return Response({"error": "Only admins can create alerts"}, status=status.HTTP_403_FORBIDDEN)
+        AlertMessage.objects.create(college=request.user.college, message=message)
+        return Response({"message": "Alert created successfully"}, status=status.HTTP_201_CREATED)
+    
+    if request.method == 'GET':
+
+        alerts = AlertMessage.objects.filter(college=request.user.college).order_by('-created_at')
+        serializer = alertSerializer(alerts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['GET'])
 def getDepartmentPoints(request, department_id):
     try:

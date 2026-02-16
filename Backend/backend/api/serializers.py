@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from .models import User, Complaint, Feedback, Department, DepartmentPointTransaction
+from .models import User, Complaint, Feedback, Department, DepartmentPointTransaction, AlertMessage
 from django.db.models import Avg
 
+
+class alertSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlertMessage
+        fields = ['id', 'college', 'message', 'created_at', 'asstimated_resolve_time']
+        read_only_fields = ['id', 'created_at']
 
 class StudentGridSerializer(serializers.ModelSerializer):
     class Meta:
