@@ -6,7 +6,7 @@ from django.db.models import Avg
 class alertSerializer(serializers.ModelSerializer):
     class Meta:
         model = AlertMessage
-        fields = ['id', 'college', 'message', 'created_at', 'asstimated_resolve_time']
+        fields = ['id', 'college', 'message', 'created_at', 'estimated_resolution_time']
         read_only_fields = ['id', 'created_at']
 
 class StudentGridSerializer(serializers.ModelSerializer):
@@ -20,6 +20,32 @@ class StudentGridSerializer(serializers.ModelSerializer):
             'roll_no',
         ]
         read_only_fields = ['id']
+
+    def validate(self, attrs):
+        # Get college from context (set by the view)
+        request = self.context.get('request')
+        college = None
+        if request and request.user.is_authenticated:
+            college = request.user.college
+        
+        roll_no = attrs.get('roll_no')
+        username = attrs.get('username')
+        
+        # Check for existing roll_no in the same college
+        if roll_no and college:
+            if User.objects.filter(roll_no=roll_no, college=college).exists():
+                raise serializers.ValidationError({
+                    'roll_no': f'A student with roll number {roll_no} already exists in this college.'
+                })
+        
+        # Check for existing username in the same college
+        if username and college:
+            if User.objects.filter(username=username, college=college).exists():
+                raise serializers.ValidationError({
+                    'username': f'A student with username {username} already exists in this college.'
+                })
+        
+        return attrs
 
     def create(self, validated_data):
         roll_no = validated_data.get("roll_no")
