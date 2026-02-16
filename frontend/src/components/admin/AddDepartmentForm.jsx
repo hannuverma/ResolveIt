@@ -39,16 +39,16 @@ const AddDepartmentForm = ({
 
 	return (
 		<form className='space-y-4' onSubmit={onSubmit}>
+			{/* Hidden input to include auto-generated username in form submission */}
+			<input type='hidden' name='username' value={generatedUsername} />
+			
 			<label className='space-y-1 text-sm font-medium text-slate-700'>
 				Department Name
 				<input
 					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
 					name='department_name'
 					value={formData.department_name}
-					onChange={(event) => {
-						onChange(event);
-						formData.username = generatedUsername; // Update username in form data when department name changes
-					}}
+					onChange={onChange}
 					placeholder='Computer Science'
 					required
 				/>

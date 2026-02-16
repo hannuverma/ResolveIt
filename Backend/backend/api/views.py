@@ -97,6 +97,8 @@ def addDepartment(request):
     description = request.data.get('description')
     code = request.data.get('code')  # Optional code for student invitations
     username = request.data.get('username')  # Optional username for department staff account
+
+    print("username = ", username)    
     
     if not name:
         return Response({"error": "Department name is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -282,6 +284,8 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         print ("Checking for existing complaints with similarity hash:", similarity_hash)
         print ("Complaint description:", description)
         print ("AI response - Dept:", dept_name, "Title:", title, "Priority:", priority)
+        if dept_name == '':
+            dept_name = "Civil/Infrastructure Department" # default department if AI fails to classify
         if Complaint.objects.filter(similarity_hash=similarity_hash).exists():
             if Complaint.objects.filter(student__college=self.request.user.college).exists():
                 repeated = True
