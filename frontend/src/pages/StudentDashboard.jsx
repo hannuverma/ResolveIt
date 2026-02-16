@@ -5,6 +5,7 @@ import SubmitComplaint from "../components/SubmitComplaint";
 import ComplaintsView from "../components/ComplaintsView";
 import FeedbackForm from "../components/FeedbackForm";
 import api from "../utils/api";
+import DepartmentLeaderboard from "../components/admin/DepartmentLeaderboard";
 
 const StudentDashboard = () => {
 	const studentProfile = localStorage.getItem("userProfile")
@@ -126,6 +127,31 @@ const StudentDashboard = () => {
 							My Complaints
 						</span>
 					</button>
+					<button
+						onClick={() => setActiveTab("leaderboard")}
+						className={`pb-4 px-6 font-semibold transition-all duration-200 ${
+							activeTab === "leaderboard"
+								? "text-green-600 border-b-2 border-green-600"
+								: "text-gray-600 hover:text-green-600"
+						}`}
+					>
+						<span className='flex items-center gap-2'>
+							<svg
+								className='w-5 h-5'
+								fill='none'
+								stroke='currentColor'
+								viewBox='0 0 24 24'
+							>
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={2}
+									d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
+								/>
+							</svg>
+							Department Leaderboard
+						</span>
+					</button>
 				</div>
 
 				{/* Tab Content */}
@@ -154,6 +180,9 @@ const StudentDashboard = () => {
 							</div>
 						)}
 					</>
+				)}
+				{activeTab === "leaderboard" && (
+					<DepartmentLeaderboard />
 				)}
 
 				{/* Sustainability Footer */}
