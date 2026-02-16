@@ -18,7 +18,6 @@ ResolveIt is an AI-powered centralized complaint management system designed for 
 - 📈 View department leaderboards
 
 ### For Departments
-- 📋 View assigned complaints filtered by college
 - ✅ Update complaint status (Pending → In Progress → Resolved)
 - 🏆 Earn reward points for timely resolutions
 - ⚡ Speed bonuses for quick responses
