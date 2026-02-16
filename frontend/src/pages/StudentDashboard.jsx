@@ -182,7 +182,12 @@ const StudentDashboard = () => {
 					</>
 				)}
 				{activeTab === "leaderboard" && (
-					<DepartmentLeaderboard />
+					<AdminFormCard
+						title='Department Leaderboard'
+						description='Ranked by (reward points/complaints) across departments.'
+					>
+						<DepartmentLeaderboard departments={departments} />
+					</AdminFormCard>
 				)}
 
 				{/* Sustainability Footer */}

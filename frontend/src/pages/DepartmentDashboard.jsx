@@ -191,7 +191,14 @@ const DepartmentDashboard = () => {
 						<span className='flex items-center gap-2'>🏆leaderboard</span>
 					</button>
 				</div>
-				{activeTab === "leaderboard" && <DepartmentLeaderboard />}
+				{activeTab === "leaderboard" && (
+					<AdminFormCard
+						title='Department Leaderboard'
+						description='Ranked by (reward points/complaints) across departments.'
+					>
+						<DepartmentLeaderboard departments={departments} />
+					</AdminFormCard>
+				)}
 
 				{activeTab === "complaints" && (
 					<>
