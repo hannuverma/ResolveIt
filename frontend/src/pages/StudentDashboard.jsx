@@ -15,13 +15,28 @@ const StudentDashboard = () => {
 	const [activeTab, setActiveTab] = useState("submit");
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
+	const [alerts, setAlerts] = useState([]);
 	const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 	const [selectedComplaint, setSelectedComplaint] = useState(null);
 	const [complaints, setComplaints] = useState([]);
 	const [loading, setLoading] = useState(false);
+
+
+	const fetchAlerts = async () => {
+		try {
+			const response = await api.get("/api/admin/createalert/");
+			console.log("Fetched alerts:", response.data);
+			setAlerts(response.data);
+		} catch (err) {
+			console.error("Error fetching alerts:", err);
+			setError("Failed to load alerts");
+		}
+	};
+
 	// Fetch complaints on component mount
 	useEffect(() => {
 		fetchComplaints();
+		fetchAlerts();
 	}, [activeTab]);
 
 	const fetchComplaints = async () => {
@@ -68,6 +83,20 @@ const StudentDashboard = () => {
 					<div className='mb-6 p-4 bg-red-50 border border-red-200 rounded-lg'>
 						<p className='text-red-700 font-medium'>{error}</p>
 					</div>
+				)}
+				{/* Global Messages */}
+				{alerts && alerts.length !== 0 && (
+					<>
+					<h2 className="capitalize text-yellow-700 text-xl font-">notifications from admin ⚠️</h2>
+					<ul className="mb-6 py-4 mt-2 bg-yellow-50 border border-yellow-500 rounded-lg list-disc pl-10">
+					{alerts.map((a, index) => (
+							<li key={index} className='text-orange-700 font-bold text-[18px] capitalize'>{a.message}</li>
+							// <div key={index} className='mb-6 p-4 bg-yellow-50 border border-yellow-500 rounded-lg'>
+							// 	<p className='text-red-700 font-medium'><b>Alert : </b>{a.message}</p>
+							// </div>
+						))}
+						</ul>
+					</>
 				)}
 				<MessageAlert
 					message={success}
