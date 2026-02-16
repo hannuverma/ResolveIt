@@ -6,7 +6,7 @@ from django.db.models import Avg
 class alertSerializer(serializers.ModelSerializer):
     class Meta:
         model = AlertMessage
-        fields = ['id', 'college', 'message', 'created_at', 'asstimated_resolve_time']
+        fields = ['id', 'college', 'message', 'created_at', 'estimated_resolution_time']
         read_only_fields = ['id', 'created_at']
 
 class StudentGridSerializer(serializers.ModelSerializer):
