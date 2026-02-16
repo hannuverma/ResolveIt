@@ -6,6 +6,7 @@ import AdminFormCard from "../components/admin/AdminFormCard";
 import AddStudentForm from "../components/admin/AddStudentForm";
 import RemoveStudentForm from "../components/admin/RemoveStudentForm";
 import AddDepartmentForm from "../components/admin/AddDepartmentForm";
+import DepartmentLeaderboard from "../components/admin/DepartmentLeaderboard";
 import RemoveDepartmentForm from "../components/admin/RemoveDepartmentForm";
 
 const AdminDashboard = () => {
@@ -164,6 +165,14 @@ const AdminDashboard = () => {
 				/>
 
 				<div className='grid gap-6 lg:grid-cols-2'>
+					<div className='lg:col-span-2'>
+						<AdminFormCard
+							title='Department Leaderboard'
+							description='Ranked by (reward points/complaints) across departments.'
+						>
+							<DepartmentLeaderboard departments={departments} />
+						</AdminFormCard>
+					</div>
 					<AdminFormCard
 						title='Add Student'
 						description='Create a student account for your college.'

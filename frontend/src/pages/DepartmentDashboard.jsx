@@ -5,6 +5,7 @@ import MessageAlert from "../components/MessageAlert";
 import ComplaintsList from "../components/ComplaintsList";
 import EditComplaintModal from "../components/EditComplaintModal";
 import DepartmentFooter from "../components/DepartmentFooter";
+import DepartmentLeaderboard from "../components/admin/DepartmentLeaderboard";
 
 const DepartmentDashboard = () => {
 	const [complaints, setComplaints] = useState([]);
@@ -18,6 +19,7 @@ const DepartmentDashboard = () => {
 		priority: "",
 		feedback: "",
 	});
+	const [activeTab, setActiveTab] = useState("complaints");
 
 	const deptProfile = localStorage.getItem("userProfile")
 		? JSON.parse(localStorage.getItem("userProfile"))
@@ -140,7 +142,7 @@ const DepartmentDashboard = () => {
 				{/* Header */}
 				<DepartmentHeader
 					department={deptProfile?.department || "Department"}
-					college={deptProfile?.college || "College"}
+					college={deptProfile?.college_name || "College"}
 					complaintCount={complaints.length}
 				/>
 
@@ -152,25 +154,68 @@ const DepartmentDashboard = () => {
 					onClose={() => setSuccess("")}
 				/>
 
-				{/* Complaints List */}
-				<ComplaintsList
-					complaints={complaints}
-					loading={loading}
-					onEdit={openEditModal}
-					getStatusColor={getStatusColor}
-					getPriorityColor={getPriorityColor}
-				/>
+				<div className='flex gap-4 mb-8 border-b-2 border-green-200'>
+					<button
+						onClick={() => setActiveTab("complaints")}
+						className={`pb-4 px-6 font-semibold transition-all duration-200 ${
+							activeTab === "complaints"
+								? "text-green-600 border-b-2 border-green-600"
+								: "text-gray-600 hover:text-green-600"
+						}`}
+					>
+						<span className='flex items-center gap-2'>
+							<svg
+								className='w-5 h-5'
+								fill='none'
+								stroke='currentColor'
+								viewBox='0 0 24 24'
+							>
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={2}
+									d='M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
+								/>
+							</svg>
+							your complaints
+						</span>
+					</button>
+					<button
+						onClick={() => setActiveTab("leaderboard")}
+						className={`pb-4 px-6 font-semibold transition-all duration-200 ${
+							activeTab === "leaderboard"
+								? "text-green-600 border-b-2 border-green-600"
+								: "text-gray-600 hover:text-green-600"
+						}`}
+					>
+						<span className='flex items-center gap-2'>🏆leaderboard</span>
+					</button>
+				</div>
+				{activeTab === "leaderboard" && <DepartmentLeaderboard />}
 
-				{/* Edit Modal */}
-				{showEditModal && selectedComplaint && (
-					<EditComplaintModal
-						complaint={selectedComplaint}
-						formData={editFormData}
-						onFormChange={handleEditChange}
-						onSave={handleSaveEdit}
-						onClose={() => setShowEditModal(false)}
-						loading={loading}
-					/>
+				{activeTab === "complaints" && (
+					<>
+						{/* Complaints List */}
+						<ComplaintsList
+							complaints={complaints}
+							loading={loading}
+							onEdit={openEditModal}
+							getStatusColor={getStatusColor}
+							getPriorityColor={getPriorityColor}
+						/>
+
+						{/* Edit Modal */}
+						{showEditModal && selectedComplaint && (
+							<EditComplaintModal
+								complaint={selectedComplaint}
+								formData={editFormData}
+								onFormChange={handleEditChange}
+								onSave={handleSaveEdit}
+								onClose={() => setShowEditModal(false)}
+								loading={loading}
+							/>
+						)}
+					</>
 				)}
 
 				{/* Footer */}
