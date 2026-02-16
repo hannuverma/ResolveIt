@@ -120,9 +120,7 @@ You MUST select ONLY from department names returned by the tool.
 Use department descriptions to determine semantic responsibility.
 
 If no department matches the complaint category or meaning,
-return department as an empty string "".
-If departments list is empty, return department as "".
-Do NOT guess.
+return department as Default to the most logically relevant department from tool results. or send it to "Civil / Infrastructure Department" if available.
 
 
 Department mapping logic: - learn it using the tool data, not assumptions. For example:

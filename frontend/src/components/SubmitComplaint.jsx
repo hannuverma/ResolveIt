@@ -138,7 +138,6 @@ const SubmitComplaint = ({ setError, setSuccess }) => {
             className="block text-sm font-semibold text-gray-700 mb-2"
           >
             Upload Image{" "}
-            <span className="text-gray-400 text-xs">(Optional)</span>
           </label>
           <div className="border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:bg-green-50 transition-colors">
             {formData.imagePreview ? (
