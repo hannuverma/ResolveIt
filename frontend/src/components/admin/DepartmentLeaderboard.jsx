@@ -43,8 +43,16 @@ const DepartmentLeaderboard = () => {
 		const list = Array.isArray(items) ? items : [];
 		return [...list]
 			.sort((a, b) => {
-				const pointsDiff = (b.reward_points || 0) - (a.reward_points || 0);
-				if (pointsDiff !== 0) return pointsDiff;
+				const scoreA =
+					a.no_of_complaints > 0
+						? a.reward_points / a.no_of_complaints
+						: 0;
+				const scoreB =
+					b.no_of_complaints > 0
+						? b.reward_points / b.no_of_complaints
+						: 0;
+				const scoreDiff = scoreB - scoreA;
+				if (scoreDiff !== 0) return scoreDiff;
 				return (a.name || "").localeCompare(b.name || "");
 			})
 			.map((dept, index) => ({

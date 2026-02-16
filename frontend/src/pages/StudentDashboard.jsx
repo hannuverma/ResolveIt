@@ -96,7 +96,7 @@ const StudentDashboard = () => {
 						</div>
 						<div className="space-y-3">
 							{alerts.map((alert, index) => (
-								<div key={index} className='bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-500 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow'>
+								<div key={index} className='bg-linear-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-500 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow'>
 									<p className='text-gray-800 font-semibold text-lg mb-2'>{alert.message}</p>
 									<div className="flex flex-wrap gap-4 text-sm text-gray-600">
 										<span className="flex items-center gap-1">
