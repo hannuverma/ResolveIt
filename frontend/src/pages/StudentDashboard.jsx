@@ -91,7 +91,7 @@ const StudentDashboard = () => {
 					<h2 className="capitalize text-yellow-700 text-xl font-">notifications from admin ⚠️</h2>
 					<ul className="mb-6 py-4 mt-2 bg-yellow-50 border border-yellow-500 rounded-lg list-disc pl-10">
 					{alerts.map((a, index) => (
-							<li key={index} className='text-orange-700 font-bold text-[18px] capitalize flex justify-around items-center'><span>{a.message}</span> <span>{a.estimated_resolution_time_formated}</span></li>
+							<li key={index} className='text-orange-700 font-bold text-[18px] capitalize flex justify-around items-center'><span>{a.message}</span> <span>{a.estimated_resolution_time_formatted}</span></li>
 							// <div key={index} className='mb-6 p-4 bg-yellow-50 border border-yellow-500 rounded-lg'>
 							// 	<p className='text-red-700 font-medium'><b>Alert : </b>{a.message}</p>
 							// </div>
