@@ -6,6 +6,7 @@ import ComplaintsView from "../components/ComplaintsView";
 import FeedbackForm from "../components/FeedbackForm";
 import api from "../utils/api";
 import DepartmentLeaderboard from "../components/admin/DepartmentLeaderboard";
+import AdminFormCard from "../components/admin/AdminFormCard";
 
 const StudentDashboard = () => {
 	const studentProfile = localStorage.getItem("userProfile")
@@ -215,7 +216,7 @@ const StudentDashboard = () => {
 						title='Department Leaderboard'
 						description='Ranked by (reward points/complaints) across departments.'
 					>
-						<DepartmentLeaderboard departments={departments} />
+						<DepartmentLeaderboard />
 					</AdminFormCard>
 				)}
 
