@@ -106,7 +106,7 @@ const StudentDashboard = () => {
 				/>
 
 				{/* Tab Navigation */}
-				<div className='flex gap-4 mb-8 border-b-2 border-green-200'>
+				<div className='flex gap-4 mb-8 border-b-2 border-green-200 overflow-x-auto dashboard-tabs'>
 					<button
 						onClick={() => setActiveTab("submit")}
 						className={`pb-4 px-6 font-semibold transition-all duration-200 ${
