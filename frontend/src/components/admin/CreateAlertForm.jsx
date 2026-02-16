@@ -12,8 +12,8 @@ const CreateAlertForm = ({
 			<label className='space-y-1 text-sm font-medium text-slate-700'>
 				Alert message
 				<textarea
-					name='description'
-					value={formData.description}
+					name='message'
+					value={formData.message}
 					onChange={onChange}
 					placeholder='Electricity will be unavailable from 2-4 PM due to maintenance.'
 					required
@@ -30,7 +30,6 @@ const CreateAlertForm = ({
 					onChange={onChange}
 					placeholder='Electricity will be unavailable from 2-4 PM due to maintenance.'
 					required
-					rows={4}
 					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
 				/>
 			</label>

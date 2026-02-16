@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
@@ -441,12 +442,29 @@ def createAlert(request):
         message = request.data.get('message')
         estimated_resolution_time = request.data.get('estimated_resolution_time')
 
+        if estimated_resolution_time in ("", None):
+            estimated_resolution_time = None
+        else:
+            parsed_time = parse_datetime(str(estimated_resolution_time))
+            if not parsed_time:
+                return Response(
+                    {"error": "Invalid estimated_resolution_time. Use ISO 8601 like 2026-02-16T10:30:00Z."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if timezone.is_naive(parsed_time):
+                parsed_time = timezone.make_aware(parsed_time, timezone.get_current_timezone())
+            estimated_resolution_time = parsed_time
+
         if not request.user.college or not message:
             return Response({"error": "Both 'college' and 'message' are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         if request.user.role != 'ADMIN':
             return Response({"error": "Only admins can create alerts"}, status=status.HTTP_403_FORBIDDEN)
-        AlertMessage.objects.create(college=request.user.college, message=message, estimated_resolution_time=estimated_resolution_time)
+        AlertMessage.objects.create(
+            college=request.user.college,
+            message=message,
+            estimated_resolution_time=estimated_resolution_time,
+        )
         return Response({"message": "Alert created successfully"}, status=status.HTTP_201_CREATED)
     
     if request.method == 'GET':
