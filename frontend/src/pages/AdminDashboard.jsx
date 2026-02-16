@@ -8,6 +8,7 @@ import RemoveStudentForm from "../components/admin/RemoveStudentForm";
 import AddDepartmentForm from "../components/admin/AddDepartmentForm";
 import DepartmentLeaderboard from "../components/admin/DepartmentLeaderboard";
 import RemoveDepartmentForm from "../components/admin/RemoveDepartmentForm";
+import CreateAlertForm from "../components/admin/CreateAlertForm";
 
 const AdminDashboard = () => {
 	const [error, setError] = useState("");
@@ -31,6 +32,10 @@ const AdminDashboard = () => {
 	});
 	const [removeDepartmentData, setRemoveDepartmentData] = useState({
 		email: "",
+	});
+	const [createAlertData, setCreateAlertData] = useState({
+		description: "",
+		estimated_resolution_time: "",
 	});
 
 	const [departments, setDepartments] = useState([]);
@@ -136,6 +141,28 @@ const AdminDashboard = () => {
 			setLoadingAction("");
 		}
 	};
+
+	const handleCreateAlert = async (event) => {
+		event.preventDefault();
+		resetAlerts();
+		setLoadingAction("createAlert");
+		try {
+			await api.post("/api/admin/createalert/", createAlertData);
+			setCreateAlertData({
+				description: "",
+				estimated_resolution_time: "",
+			});
+			setSuccess("Alert created successfully.");
+		} catch (error) {
+			setError(
+				"Failed to create alert. Please check the details and try again.",
+			);
+			console.error("Create Alert Error:", error);
+		} finally {
+			setLoadingAction("");
+		}
+	};
+
 	const fetchDepartments = async () => {
 		try {
 			const response = await api.get("/api/admin/getdepartments/");
@@ -189,7 +216,6 @@ const AdminDashboard = () => {
 							loading={loadingAction === "addStudent"}
 						/>
 					</AdminFormCard>
-
 					<AdminFormCard
 						title='Remove Student'
 						description='Deactivate a student using email and roll number.'
@@ -206,44 +232,63 @@ const AdminDashboard = () => {
 							loading={loadingAction === "removeStudent"}
 						/>
 					</AdminFormCard>
+					<div className=' gap-6 lg:col-span-2 grid lg:grid-cols-2'>
+						<AdminFormCard
+							title='Add Department'
+							description='Provision a department login with credentials.'
+						>
+							<AddDepartmentForm
+								formData={addDepartmentData}
+								onChange={(event) => {
+									setAddDepartmentData((prev) => ({
+										...prev,
+										[event.target.name]: event.target.value,
+									}));
+								}}
+								onSubmit={handleAddDepartment}
+								loading={loadingAction === "addDepartment"}
+								departments={departments}
+								collegeName={adminProfile?.college_name}
+							/>
+						</AdminFormCard>
 
-					<AdminFormCard
-						title='Add Department'
-						description='Provision a department login with credentials.'
-					>
-						<AddDepartmentForm
-							formData={addDepartmentData}
-							onChange={(event) => {
-								setAddDepartmentData((prev) => ({
-									...prev,
-									[event.target.name]: event.target.value,
-								}));
-							}}
-							onSubmit={handleAddDepartment}
-							loading={loadingAction === "addDepartment"}
-							departments={departments}
-							collegeName={adminProfile?.college_name}
-						/>
-					</AdminFormCard>
-
-					<AdminFormCard
-						title='Remove Department'
-						description='Remove a department account by code.'
-					>
-						<RemoveDepartmentForm
-							formData={removeDepartmentData}
-							onChange={(event) => {
-								console.log("Field changed:", event.target.name);
-								setRemoveDepartmentData((prev) => ({
-									...prev,
-									[event.target.name]: event.target.value,
-								}));
-							}}
-							onSubmit={handleRemoveDepartment}
-							loading={loadingAction === "removeDepartment"}
-							departments={departments}
-						/>
-					</AdminFormCard>
+						<div className="flex flex-col gap-1.5">
+							<AdminFormCard
+								title='Remove Department'
+								description='Remove a department account by code.'
+							>
+								<RemoveDepartmentForm
+									formData={removeDepartmentData}
+									onChange={(event) => {
+										console.log("Field changed:", event.target.name);
+										setRemoveDepartmentData((prev) => ({
+											...prev,
+											[event.target.name]: event.target.value,
+										}));
+									}}
+									onSubmit={handleRemoveDepartment}
+									loading={loadingAction === "removeDepartment"}
+									departments={departments}
+								/>
+							</AdminFormCard>
+							<AdminFormCard
+								title='Create alert ⚠️'
+								description='Send notifications to students.'
+							>
+								<CreateAlertForm
+									formData={createAlertData}
+									onChange={(event) => {
+										setCreateAlertData((prev) => ({
+											...prev,
+											[event.target.name]: event.target.value,
+										}));
+									}}
+									onSubmit={handleCreateAlert}
+									loading={loadingAction === "createAlert"}
+								/>
+							</AdminFormCard>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
