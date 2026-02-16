@@ -6,9 +6,6 @@ const DepartmentLeaderboard = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 
-
-	
-
 	useEffect(() => {
 		let isActive = true;
 
@@ -79,26 +76,30 @@ const DepartmentLeaderboard = () => {
 	return (
 		<div className='space-y-6'>
 			<div className='grid gap-4 md:grid-cols-3'>
-				{topThree.map((dept) => (
-					<div
-						key={dept.id || dept.name}
-						className='rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col items-center text-center justify-end'
-					>
-						<p className='text-xs font-semibold uppercase text-slate-500'>
-							Rank {dept.rank}
-						</p>
-						<h3 className='mt-2 text-lg font-semibold text-slate-900'>
-							{dept.name}
-						</h3>
-						<p className='mt-1 text-sm text-slate-600'>
-							Score: {dept.reward_points || 0}
-						</p>
+				{topThree.map((dept) => {
+					const score = dept.no_of_complaints > 0 ? dept.reward_points / dept.no_of_complaints : 0;
+
+					return (
 						<div
-							style={{ height: `${dept.reward_points * 5 + 5}px` }}
-							className={`w-1/2 rounded-t-md mt-2.5 ${dept.rank === 1 ? "bg-orange-600" : dept.rank === 2 ? "bg-orange-500" : "bg-yellow-400"}`}
-						></div>
-					</div>
-				))}
+							key={dept.id || dept.name}
+							className='rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col items-center text-center justify-end'
+						>
+							<p className='text-xs font-semibold uppercase text-slate-500'>
+								Rank {dept.rank}
+							</p>
+							<h3 className='mt-2 text-lg font-semibold text-slate-900'>
+								{dept.name}
+							</h3>
+							<p className='mt-1 text-sm text-slate-600'>
+								Score: {score.toFixed(2)} 
+							</p>
+							<div
+								style={{ height: `${score * 5 + 5}px` }}
+								className={`w-1/2 rounded-t-md mt-2.5 ${dept.rank === 1 ? "bg-orange-600" : dept.rank === 2 ? "bg-orange-500" : "bg-yellow-400"}`}
+							></div>
+						</div>
+					);
+				})}
 			</div>
 
 			<div className='overflow-hidden rounded-xl border border-slate-200'>
@@ -120,7 +121,7 @@ const DepartmentLeaderboard = () => {
 							</div>
 							<div>{dept.name}</div>
 							<div className='text-right font-semibold'>
-								{dept.reward_points || 0}
+								{dept.no_of_complaints > 0 ? (dept.reward_points / dept.no_of_complaints).toFixed(2) : "0.00"}
 							</div>
 						</div>
 					))}

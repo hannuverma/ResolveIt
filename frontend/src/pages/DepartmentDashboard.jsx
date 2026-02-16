@@ -6,6 +6,7 @@ import ComplaintsList from "../components/ComplaintsList";
 import EditComplaintModal from "../components/EditComplaintModal";
 import DepartmentFooter from "../components/DepartmentFooter";
 import DepartmentLeaderboard from "../components/admin/DepartmentLeaderboard";
+import AdminFormCard from "../components/admin/AdminFormCard";
 
 const DepartmentDashboard = () => {
 	const [complaints, setComplaints] = useState([]);
@@ -196,7 +197,7 @@ const DepartmentDashboard = () => {
 						title='Department Leaderboard'
 						description='Ranked by (reward points/complaints) across departments.'
 					>
-						<DepartmentLeaderboard departments={departments} />
+						<DepartmentLeaderboard />
 					</AdminFormCard>
 				)}
 
