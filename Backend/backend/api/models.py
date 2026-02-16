@@ -21,7 +21,7 @@ class Department(models.Model):
     reward_points = models.IntegerField(default=0)  
     code = models.CharField(max_length=20, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    no_of_complaints_resolved = models.IntegerField(default=0, null=True, blank=True)
+    no_of_complaints = models.IntegerField(default=0, null=True, blank=True)
 
     class Meta:
         # Ensures one college can't have two departments with same name or code
@@ -66,7 +66,7 @@ class AlertMessage(models.Model):
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     asstimated_resolve_time = models.DateTimeField(null=True, blank=True)
-    
+
     def __str__(self):
         return f"Alert for {self.college.name} at {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
@@ -106,7 +106,8 @@ class Complaint(models.Model):
         
 
     def __str__(self):
-        return f"Complaint #{self.id} - {self.status}"
+        repeated_status = "Repeated" if self.repeated_complaint else "Unique"
+        return f"Complaint #{self.title} - {self.status} - {repeated_status}"
 
  
 class Feedback(models.Model):
