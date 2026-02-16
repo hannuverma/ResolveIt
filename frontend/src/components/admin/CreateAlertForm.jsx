@@ -12,8 +12,8 @@ const CreateAlertForm = ({
 			<label className='space-y-1 text-sm font-medium text-slate-700'>
 				Alert message
 				<textarea
-					name='message'
-					value={formData.message}
+					name='description'
+					value={formData.description}
 					onChange={onChange}
 					placeholder='Electricity will be unavailable from 2-4 PM due to maintenance.'
 					required
@@ -25,7 +25,7 @@ const CreateAlertForm = ({
 				estimated resolution time
 				<input
 					name='estimated_resolution_time'
-                    type="date"
+                    type="datetime-local"
 					value={formData.estimated_resolution_time}
 					onChange={onChange}
 					placeholder='Electricity will be unavailable from 2-4 PM due to maintenance.'
