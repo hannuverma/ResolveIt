@@ -14,7 +14,7 @@ from .models import User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets, status
-from .services import add_department_points, apply_unresolved_penalties, process_complaint_rating, get_group_average_rating
+from .services import add_department_points, process_complaint_rating, get_group_average_rating
 from rest_framework.decorators import api_view
 import requests
 from dotenv import load_dotenv
@@ -89,11 +89,6 @@ def removeDepartment(request, identifier):
         return Response({"error": "Failed to remove department"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
-def run_daily_penalties(request):
-    apply_unresolved_penalties()
-    return Response({"message": "Penalties applied"})
-
 
 @api_view(['POST'])
 def addDepartment(request):
@@ -101,6 +96,7 @@ def addDepartment(request):
     password = request.data.get('password')
     description = request.data.get('description')
     code = request.data.get('code')  # Optional code for student invitations
+    username = request.data.get('username')  # Optional username for department staff account
     
     if not name:
         return Response({"error": "Department name is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -112,10 +108,6 @@ def addDepartment(request):
     if request.user.is_authenticated and request.user.college:
         college = request.user.college
     
-    # Generate username from department name and college name
-    # Format: name@collegename.com (e.g., "computerscience@iit.com")
-    college_name = college.name.lower().replace(' ', '') if college and college.name else 'college'
-    username = f"{name.lower().replace(' ', '')}@{college_name}.com"
     
     # Create department
     from django.db import transaction

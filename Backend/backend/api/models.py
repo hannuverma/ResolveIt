@@ -123,7 +123,7 @@ class DepartmentPointTransaction(models.Model):
     ]
 
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    complaint = models.ForeignKey(Complaint, on_delete=models.DO_NOTHING, null=True, blank=True)
+    complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, null=True, blank=True)
     points = models.IntegerField()
     transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
     penalty_day = models.IntegerField(null=True, blank=True)
