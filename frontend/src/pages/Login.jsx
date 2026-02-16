@@ -108,7 +108,7 @@ const Login = () => {
 								htmlFor='username'
 								className='block text-sm font-semibold text-gray-700 mb-2'
 							>
-								username Address
+								Email Address
 							</label>
 							<input
 								type='username'
