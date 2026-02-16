@@ -101,6 +101,7 @@ const AdminDashboard = () => {
 		setLoadingAction("addDepartment");
 		try {
 			await api.post("/api/admin/adddepartments/", addDepartmentData);
+			console.log("Department added:", addDepartmentData);
 			setAddDepartmentData({
 				department_name: "",
 				username: "",
@@ -240,10 +241,28 @@ const AdminDashboard = () => {
 							<AddDepartmentForm
 								formData={addDepartmentData}
 								onChange={(event) => {
-									setAddDepartmentData((prev) => ({
-										...prev,
-										[event.target.name]: event.target.value,
-									}));
+									const { name, value } = event.target;
+									setAddDepartmentData((prev) => {
+										const updated = {
+											...prev,
+											[name]: value,
+										};
+
+										// Auto-generate username when department_name changes
+										if (name === "department_name") {
+											const deptFirstName = value
+												.split(" ")[0]
+												.toLowerCase();
+											const collegeNameFormatted = (
+												adminProfile?.college_name || "College"
+											)
+												.replace(/\s+/g, "")
+												.toLowerCase();
+											updated.username = `${deptFirstName}@${collegeNameFormatted}.com`;
+										}
+
+										return updated;
+									});
 								}}
 								onSubmit={handleAddDepartment}
 								loading={loadingAction === "addDepartment"}
@@ -252,7 +271,7 @@ const AdminDashboard = () => {
 							/>
 						</AdminFormCard>
 
-						<div className="flex flex-col gap-1.5">
+						<div className='flex flex-col gap-1.5'>
 							<AdminFormCard
 								title='Remove Department'
 								description='Remove a department account by code.'
