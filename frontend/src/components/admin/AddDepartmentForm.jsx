@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 const AddDepartmentForm = ({
 	formData,
@@ -6,8 +6,25 @@ const AddDepartmentForm = ({
 	onSubmit,
 	loading,
 	departments,
+	collegeName = "College", // Pass college name from parent
 }) => {
 	const [customValidity, setCustomValidity] = useState("");
+
+	// Generate automatic username from department name and college name
+	const generatedUsername = useMemo(() => {
+		if (!formData.department_name) return "";
+		
+		// Remove spaces and convert to lowercase
+		const deptFirstName = formData.department_name
+			.split(" ")[0]
+			.toLowerCase();
+		const collegeNameFormatted = collegeName
+			.replace(/\s+/g, "")
+			.toLowerCase();
+		
+		return `${deptFirstName}@${collegeNameFormatted}.com`;
+	}, [formData.department_name, collegeName]);
+
 	const checkduplicate = (event) => {
 		const code = event.target.value;
 		const isDuplicate = departments.some((dept) => dept.code === code);
@@ -28,22 +45,28 @@ const AddDepartmentForm = ({
 					className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
 					name='department_name'
 					value={formData.department_name}
-					onChange={onChange}
+					onChange={(event) => {
+						onChange(event);
+						formData.username = generatedUsername; // Update username in form data when department name changes
+					}}
 					placeholder='Computer Science'
 					required
 				/>
 			</label>
-			<div className='grid gap-4 sm:grid-cols-2'>
+
+
+			<div className='grid gap-4 sm:grid-cols-2 mt-3.5'>
 				<label className='space-y-1 text-sm font-medium text-slate-700'>
-					Department Email
+					Auto-Generated Username
 					<input
-						className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none'
-						name='username'
-						value={formData.username}
-						onChange={onChange}
-						placeholder='cs_dept'
-						required
+						className='w-full rounded-xl border border-slate-200 bg-gray-100 px-3 py-2 text-sm text-slate-700 shadow-sm cursor-not-allowed'
+						value={generatedUsername}
+						disabled
+						placeholder='username@collegename.com'
 					/>
+					<p className='text-xs text-slate-500 whitespace-nowrap'>
+						This username is auto-generated from the department name
+					</p>
 				</label>
 				<label className='space-y-1 text-sm font-medium text-slate-700'>
 					Password

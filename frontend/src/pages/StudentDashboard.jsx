@@ -21,7 +21,7 @@ const StudentDashboard = () => {
 	// Fetch complaints on component mount
 	useEffect(() => {
 		fetchComplaints();
-	}, []);
+	}, [activeTab]);
 
 	const fetchComplaints = async () => {
 		try {

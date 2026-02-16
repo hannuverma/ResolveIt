@@ -272,8 +272,8 @@ class ComplaintViewSet(viewsets.ModelViewSet):
             similarity_hash = data.get("similarity_hash")
 
         
-        except requests.RequestException:
-            print("AI request failed", traceback.format_exc())
+        except requests.RequestException as e:
+            print("AI request failed", e)
             
 
         # Resolve department by department-user username first (department usernames are unique),
