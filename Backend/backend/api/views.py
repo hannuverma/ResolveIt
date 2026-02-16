@@ -439,13 +439,14 @@ class ComplaintViewSet(viewsets.ModelViewSet):
 def createAlert(request):
     if request.method == 'POST':
         message = request.data.get('message')
+        estimated_resolution_time = request.data.get('estimated_resolution_time')
 
         if not request.user.college or not message:
             return Response({"error": "Both 'college' and 'message' are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         if request.user.role != 'ADMIN':
             return Response({"error": "Only admins can create alerts"}, status=status.HTTP_403_FORBIDDEN)
-        AlertMessage.objects.create(college=request.user.college, message=message)
+        AlertMessage.objects.create(college=request.user.college, message=message, estimated_resolution_time=estimated_resolution_time)
         return Response({"message": "Alert created successfully"}, status=status.HTTP_201_CREATED)
     
     if request.method == 'GET':
