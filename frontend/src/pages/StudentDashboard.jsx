@@ -87,17 +87,37 @@ const StudentDashboard = () => {
 				)}
 				{/* Admin Notifications */}
 				{alerts && alerts.length !== 0 && (
-					<>
-					<h2 className="capitalize text-yellow-700 text-xl font-">notifications from admin ⚠️</h2>
-					<ul className="mb-6 py-4 mt-2 bg-yellow-50 border border-yellow-500 rounded-lg list-disc pl-10">
-					{alerts.map((a, index) => (
-							<li key={index} className='text-orange-700 font-bold text-[18px] capitalize flex justify-around items-center'><span>{a.message}</span> <span>{a.estimated_resolution_time_formatted}</span></li>
-							// <div key={index} className='mb-6 p-4 bg-yellow-50 border border-yellow-500 rounded-lg'>
-							// 	<p className='text-red-700 font-medium'><b>Alert : </b>{a.message}</p>
-							// </div>
-						))}
-						</ul>
-					</>
+					<div className="mb-8">
+						<div className="flex items-center gap-2 mb-4">
+							<svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+							</svg>
+							<h2 className="text-2xl font-bold text-amber-700">Important Notifications</h2>
+						</div>
+						<div className="space-y-3">
+							{alerts.map((alert, index) => (
+								<div key={index} className='bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-500 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow'>
+									<p className='text-gray-800 font-semibold text-lg mb-2'>{alert.message}</p>
+									<div className="flex flex-wrap gap-4 text-sm text-gray-600">
+										<span className="flex items-center gap-1">
+											<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+											</svg>
+											Posted: {alert.created_at_formatted}
+										</span>
+										{alert.estimated_resolution_time_formatted && (
+											<span className="flex items-center gap-1 text-green-700 font-medium">
+												<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+													<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+												</svg>
+												Expected resolution: {alert.estimated_resolution_time_formatted}
+											</span>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
 				)}
 				<MessageAlert
 					message={success}
