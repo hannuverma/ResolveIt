@@ -7,7 +7,7 @@ from django.conf import settings
 
 class College(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
-    # The code used to invite students (optional)
+    
     code = models.CharField(max_length=20, unique=True, null=True, blank=True) 
 
     def __str__(self):
@@ -21,7 +21,8 @@ class Department(models.Model):
     reward_points = models.IntegerField(default=0)  
     code = models.CharField(max_length=20, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    
+    no_of_complaints = models.IntegerField(default=0, null=True, blank=True)
+
     class Meta:
         # Ensures one college can't have two departments with same name or code
         # but different colleges can both have same names and codes
@@ -59,13 +60,22 @@ class User(AbstractUser):
         if self.role == self.Roles.STUDENT and self.roll_no:
             return f"{self.roll_no} ({self.username}) - {self.college_name}"
         return f"{self.username} ({self.role})"
+    
+class AlertMessage(models.Model):
+    college = models.ForeignKey(College, on_delete=models.CASCADE, related_name='alerts')
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    asstimated_resolve_time = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Alert for {self.college.name} at {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 class Complaint(models.Model):
     class Status(models.TextChoices):
         PENDING = 'PENDING', 'Pending (AI Assigned)'
         IN_PROGRESS = 'IN_PROGRESS', 'In Progress'
         RESOLVED = 'RESOLVED', 'Resolved'
-        CLOSED = 'CLOSED', 'Closed by Student'
+        REMOVED = 'REMOVED', 'Removed by Student'
 
 
     college = models.ForeignKey(College, on_delete=models.CASCADE, default=None, null=True, blank=True, related_name='complaints')
@@ -96,7 +106,8 @@ class Complaint(models.Model):
         
 
     def __str__(self):
-        return f"Complaint #{self.id} - {self.status}"
+        repeated_status = "Repeated" if self.repeated_complaint else "Unique"
+        return f"Complaint #{self.title} - {self.status} - {repeated_status}"
 
  
 class Feedback(models.Model):
@@ -123,7 +134,7 @@ class DepartmentPointTransaction(models.Model):
     ]
 
     department = models.ForeignKey(Department, on_delete=models.CASCADE)
-    complaint = models.ForeignKey(Complaint, on_delete=models.DO_NOTHING, null=True, blank=True)
+    complaint = models.ForeignKey(Complaint, on_delete=models.CASCADE, null=True, blank=True)
     points = models.IntegerField()
     transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPES)
     penalty_day = models.IntegerField(null=True, blank=True)

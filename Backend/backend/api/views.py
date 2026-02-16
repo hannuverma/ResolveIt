@@ -8,13 +8,13 @@ from rest_framework import status
 from django.db import transaction
 import traceback
 from django.contrib.auth import authenticate, login as django_login
-from .serializers import StudentGridSerializer, ComplaintSerializer, FeedbackSerializer, departmentSerializer, DepartmentPointTransactionSerializer
-from .models import Complaint, DepartmentPointTransaction, Feedback, Department
+from .serializers import StudentGridSerializer, ComplaintSerializer, FeedbackSerializer, departmentSerializer, DepartmentPointTransactionSerializer, alertSerializer
+from .models import Complaint, DepartmentPointTransaction, Feedback, Department, AlertMessage
 from .models import User
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets, status
-from .services import add_department_points, apply_unresolved_penalties, process_complaint_rating, get_group_average_rating
+from .services import add_department_points, process_complaint_rating, get_group_average_rating
 from rest_framework.decorators import api_view
 import requests
 from dotenv import load_dotenv
@@ -89,11 +89,6 @@ def removeDepartment(request, identifier):
         return Response({"error": "Failed to remove department"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@api_view(['POST'])
-def run_daily_penalties(request):
-    apply_unresolved_penalties()
-    return Response({"message": "Penalties applied"})
-
 
 @api_view(['POST'])
 def addDepartment(request):
@@ -101,7 +96,7 @@ def addDepartment(request):
     password = request.data.get('password')
     description = request.data.get('description')
     code = request.data.get('code')  # Optional code for student invitations
-    username = request.data.get('username') 
+    username = request.data.get('username')  # Optional username for department staff account
     
     if not name:
         return Response({"error": "Department name is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -113,8 +108,6 @@ def addDepartment(request):
     if request.user.is_authenticated and request.user.college:
         college = request.user.college
     
-    # Generate username from department name and college name
-    # Format: name@collegename.com (e.g., "computerscience@iit.com")
     
     # Create department
     from django.db import transaction
@@ -438,7 +431,26 @@ class ComplaintViewSet(viewsets.ModelViewSet):
                                 c.resolved_at = now
                                 c.save()
     
-        
+@api_view(['POST', 'GET'])
+def createAlert(request):
+    if request.method == 'POST':
+        message = request.data.get('message')
+
+        if not request.user.college or not message:
+            return Response({"error": "Both 'college' and 'message' are required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if request.user.role != 'ADMIN':
+            return Response({"error": "Only admins can create alerts"}, status=status.HTTP_403_FORBIDDEN)
+        AlertMessage.objects.create(college=request.user.college, message=message)
+        return Response({"message": "Alert created successfully"}, status=status.HTTP_201_CREATED)
+    
+    if request.method == 'GET':
+
+        alerts = AlertMessage.objects.filter(college=request.user.college).order_by('-created_at')
+        serializer = alertSerializer(alerts, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['GET'])
 def getDepartmentPoints(request, department_id):
     try:

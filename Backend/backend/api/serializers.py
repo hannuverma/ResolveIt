@@ -1,7 +1,13 @@
 from rest_framework import serializers
-from .models import User, Complaint, Feedback, Department, DepartmentPointTransaction
+from .models import User, Complaint, Feedback, Department, DepartmentPointTransaction, AlertMessage
 from django.db.models import Avg
 
+
+class alertSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AlertMessage
+        fields = ['id', 'college', 'message', 'created_at', 'asstimated_resolve_time']
+        read_only_fields = ['id', 'created_at']
 
 class StudentGridSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,11 +32,17 @@ class StudentGridSerializer(serializers.ModelSerializer):
     
 class departmentSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
+    no_of_complaints = serializers.SerializerMethodField()
 
     class Meta:
         model = Department
-        fields = ['id', 'name', 'reward_points', 'college', 'code', 'user', 'description']
+        fields = ['id', 'name', 'reward_points', 'college', 'code', 'user', 'description', 'no_of_complaints']
         read_only_fields = ['id']
+
+    def get_no_of_complaints(self, obj):
+        if not hasattr(obj, 'tasks'):
+            return 0
+        return obj.tasks.filter(repeated_complaint=False).count()
 
     def get_user(self, obj):
         if obj.user:
