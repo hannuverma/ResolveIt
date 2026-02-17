@@ -183,9 +183,13 @@ const ComplaintsView = ({setShowFeedbackModal, setSelectedComplaint, complaints,
 									<p className='text-sm text-green-700 font-medium mb-1'>
 										Your Feedback
 									</p>
-									<p className='text-gray-700'>
-										{complaint.feedback.review_text}
-									</p>
+									{complaint.feedback.image && (
+										<img
+											src={complaint.feedback.image}
+											alt='Feedback Image'
+											className='h-24 rounded-lg object-cover mt-2'
+										/>
+									)}
 									<p className='text-xs text-gray-500 mt-2'>
 										Rating: {complaint.feedback.rating}
 										/5 ⭐

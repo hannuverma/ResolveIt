@@ -120,7 +120,7 @@ const ComplaintCard = ({
 			)}
 
 			{/* Edit Button */}
-			{complaint.resolved_at && (
+			{!complaint.resolved_at && (
 				<button
 					onClick={() => onEdit(complaint)}
 					className=' cursor-pointer w-full mt-4 px-4 py-3 bg-linear-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg'
