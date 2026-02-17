@@ -39,6 +39,7 @@ const AdminDashboard = () => {
 	});
 
 	const [departments, setDepartments] = useState([]);
+	const [alerts, setAlerts] = useState([]);
 
 	const adminProfile = localStorage.getItem("userProfile")
 		? JSON.parse(localStorage.getItem("userProfile"))
@@ -173,8 +174,19 @@ const AdminDashboard = () => {
 			console.error("Fetch Departments Error:", error);
 		}
 	};
+	const fetchAlerts = async () => {
+		try {
+			const response = await api.get("/api/admin/createalert/");
+			console.log("Fetched alerts:", response.data);
+			setAlerts(response.data);
+		} catch (err) {
+			console.error("Error fetching alerts:", err);
+			setError("Failed to load alerts");
+		}
+	};
 	useEffect(() => {
 		fetchDepartments();
+		fetchAlerts();
 	}, []);
 
 	return (
@@ -184,7 +196,102 @@ const AdminDashboard = () => {
 					adminName={adminProfile?.name || adminProfile?.username}
 					collegeName={adminProfile?.college_name}
 				/>
-
+				{/* Admin Notifications */}
+				{alerts && alerts.length !== 0 && (
+					<div className='mb-8'>
+						<div className='flex items-center gap-2 mb-4'>
+							<svg
+								className='w-6 h-6 text-amber-600'
+								fill='none'
+								stroke='currentColor'
+								viewBox='0 0 24 24'
+							>
+								<path
+									strokeLinecap='round'
+									strokeLinejoin='round'
+									strokeWidth={2}
+									d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z'
+								/>
+							</svg>
+							<h2 className='text-2xl font-bold text-amber-700 capitalize'>
+								ongoing alerts
+							</h2>
+						</div>
+						<div className='space-y-3'>
+							{alerts.map((alert, index) => (
+								<div
+									key={index}
+									className='bg-linear-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-500 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow'
+								>
+									<p className='text-gray-800 font-semibold text-lg mb-2 flex items-center justify-between'>
+										{alert.message}
+										<button
+											onClick={async () => {
+												await api.delete(
+													`admin/removealert/${alert.id}/`,
+												);
+												fetchAlerts();
+											}}
+											className='bg-orange-500 text-white flex items-center justify-around  cursor-pointer px-2 py-1 rounded hover:bg-red-600 transition-colors'
+										>
+											<svg
+												className='w-4 h-4 text-white hover:text-white'
+												fill='none'
+												stroke='currentColor'
+												viewBox='0 0 24 24'
+											>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													strokeWidth={2}
+													d='M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16'
+												/>
+											</svg>
+											Delete
+										</button>
+									</p>
+									<div className='flex flex-wrap gap-4 text-sm text-gray-600'>
+										<span className='flex items-center gap-1'>
+											<svg
+												className='w-4 h-4'
+												fill='none'
+												stroke='currentColor'
+												viewBox='0 0 24 24'
+											>
+												<path
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													strokeWidth={2}
+													d='M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+												/>
+											</svg>
+											Posted: {alert.created_at_formatted}
+										</span>
+										{alert.estimated_resolution_time_formatted && (
+											<span className='flex items-center gap-1 text-green-700 font-medium'>
+												<svg
+													className='w-4 h-4'
+													fill='none'
+													stroke='currentColor'
+													viewBox='0 0 24 24'
+												>
+													<path
+														strokeLinecap='round'
+														strokeLinejoin='round'
+														strokeWidth={2}
+														d='M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'
+													/>
+												</svg>
+												Expected resolution:{" "}
+												{alert.estimated_resolution_time_formatted}
+											</span>
+										)}
+									</div>
+								</div>
+							))}
+						</div>
+					</div>
+				)}
 				<MessageAlert message={error} type='error' />
 				<MessageAlert
 					message={success}

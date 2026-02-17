@@ -20,7 +20,7 @@ const RemoveDepartmentForm = ({ formData, onChange, onSubmit, loading, departmen
 					{departments.map((dept) => {
 						return (<option
 							key={dept.code}
-							value={dept.user.username}
+							value={dept.user.username? dept.user.username : dept.code}
 							className='w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-amber-500 focus:outline-none'
 						>
 							{dept.name} ({dept.code})
