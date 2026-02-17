@@ -230,7 +230,7 @@ const AdminDashboard = () => {
 										<button
 											onClick={async () => {
 												await api.delete(
-													`admin/removealert/${alert.id}/`,
+													`api/admin/removealert/${alert.id}/`,
 												);
 												fetchAlerts();
 											}}
