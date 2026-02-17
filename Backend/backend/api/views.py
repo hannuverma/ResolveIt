@@ -363,7 +363,7 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         return normalized
 
     def _filter_allowed_fields(self, data):
-        allowed_fields = {"status"}
+        allowed_fields = {"status", "resolved_image"}
         return {key: value for key, value in data.items() if key in allowed_fields}
 
     def update(self, request, *args, **kwargs):
@@ -408,7 +408,9 @@ class ComplaintViewSet(viewsets.ModelViewSet):
         # Override to cascade RESOLVED status to complaints with the same similarity_hash
         instance = serializer.instance
         old_status = instance.status
-
+        resolved_image = self.request.FILES.get('resolved_image')
+        if resolved_image:
+            instance.resolved_image = resolved_image
         # Save the instance first
         with transaction.atomic():
             super().perform_update(serializer)

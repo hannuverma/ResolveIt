@@ -84,6 +84,7 @@ class Complaint(models.Model):
     title = models.CharField(max_length=200, default='No Title', blank=True)
     similarity_hash = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='complaints', null=True, blank=True)
+    resolved_image = models.ImageField(upload_to='complaints/resolved', null=True, blank=True)
     description = models.TextField()
     assigned_department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name='tasks')
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
@@ -117,6 +118,7 @@ class Feedback(models.Model):
     rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)]) 
     review_text = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='feedback', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
