@@ -225,7 +225,7 @@ const DepartmentDashboard = () => {
 						)}
 					</>
 				)}
-
+ 
 				{/* Footer */}
 				<DepartmentFooter />
 			</div>
