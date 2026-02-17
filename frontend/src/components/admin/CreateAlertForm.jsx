@@ -49,57 +49,42 @@ const CreateAlertForm = ({
 
 			<div className='space-y-4 bg-amber-50 p-4 rounded-xl border border-amber-200'>
 				<div>
-					<label className='space-y-2 text-sm font-medium text-slate-700'>
-						<div className='flex justify-between items-center'>
-							<span>Resolution Time</span>
+					<label className='text-sm font-medium text-slate-700'>
+						<div className='flex justify-between items-center mb-2'>
+							<span>Estimated Resolution Time</span>
 							<span className='text-amber-700 font-semibold'>{getResolutionDisplay()}</span>
 						</div>
 					</label>
-					<p className='text-xs text-slate-500 mb-3'>Set estimated time to resolve this issue</p>
+					<p className='text-xs text-slate-500 mb-4'>Enter estimated time to resolve this issue</p>
 
-					{/* Days Slider */}
-					<div className='mb-4'>
-						<div className='flex justify-between items-center mb-2'>
-							<label htmlFor='days-slider' className='text-sm text-slate-700'>
+					<div className='flex gap-4'>
+						<div className='flex-1'>
+							<label htmlFor='days-input' className='block text-sm text-slate-700 mb-2'>
 								Days
 							</label>
-							<span className='text-lg font-semibold text-amber-700'>{days}</span>
+							<input
+								id='days-input'
+								type='number'
+								min='0'
+								value={days}
+								onChange={handleDaysChange}
+								className='w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-amber-500 focus:outline-none'
+							/>
 						</div>
-						<input
-							id='days-slider'
-							type='range'
-							min='0'
-							max='30'
-							value={days}
-							onChange={handleDaysChange}
-							className='w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-600'
-						/>
-						<div className='flex justify-between text-xs text-slate-500 mt-1'>
-							<span>0 days</span>
-							<span>30 days</span>
-						</div>
-					</div>
 
-					{/* Hours Slider */}
-					<div>
-						<div className='flex justify-between items-center mb-2'>
-							<label htmlFor='hours-slider' className='text-sm text-slate-700'>
-								Additional Hours
+						<div className='flex-1'>
+							<label htmlFor='hours-input' className='block text-sm text-slate-700 mb-2'>
+								Hours
 							</label>
-							<span className='text-lg font-semibold text-amber-700'>{hours}</span>
-						</div>
-						<input
-							id='hours-slider'
-							type='range'
-							min='0'
-							max='23'
-							value={hours}
-							onChange={handleHoursChange}
-							className='w-full h-2 bg-amber-200 rounded-lg appearance-none cursor-pointer accent-amber-600'
-						/>
-						<div className='flex justify-between text-xs text-slate-500 mt-1'>
-							<span>0 hours</span>
-							<span>23 hours</span>
+							<input
+								id='hours-input'
+								type='number'
+								min='0'
+								max='23'
+								value={hours}
+								onChange={handleHoursChange}
+								className='w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-amber-500 focus:outline-none'
+							/>
 						</div>
 					</div>
 				</div>
