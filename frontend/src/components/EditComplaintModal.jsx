@@ -49,7 +49,7 @@ const EditComplaintModal = ({
 							htmlFor='image'
 							className='block text-sm font-semibold text-gray-700 mb-2'
 						>
-							Upload Image{" "}
+							Upload Resolved Image{" "}
 						</label>
 						<div className='border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:bg-green-50 transition-colors'>
 							{formData.imagePreview ? (
@@ -137,6 +137,13 @@ const EditComplaintModal = ({
 						<p className='text-gray-700 text-sm mb-2'>
 							{complaint.description}
 						</p>
+						{complaint.image ? (
+							<img
+								src={complaint.image}
+								alt='Original complaint'
+								className='mt-3 h-28 rounded-lg object-cover'
+							/>
+						) : null}
 						<p className='text-xs text-gray-500'>
 							Submitted:{" "}
 							{new Date(complaint.created_at).toLocaleDateString()}

@@ -78,8 +78,8 @@ const DepartmentDashboard = () => {
 		setEditFormData({
 			status: complaint.status || "pending",
 			feedback: complaint.feedback?.comment || "",
-			image: null,
-			imagePreview: complaint.image || null,
+			resolved_image: null,
+			imagePreview: complaint.resolved_image || null,
 		});
 		setShowEditModal(true);
 		setError("");
@@ -100,14 +100,28 @@ const DepartmentDashboard = () => {
 			setLoading(true);
 			setError("");
 
-			const updateData = {
-				status: editFormData.status,
-			};
+			if (editFormData.resolved_image) {
+				const formData = new FormData();
+				formData.append("status", editFormData.status);
+				formData.append("resolved_image", editFormData.resolved_image);
 
-			await api.patch(
-				`/api/complaints/${selectedComplaint.id}/`,
-				updateData,
-			);
+				await api.patch(
+					`/api/complaints/${selectedComplaint.id}/`,
+					formData,
+					{
+						headers: { "Content-Type": "multipart/form-data" },
+					},
+				);
+			} else {
+				const updateData = {
+					status: editFormData.status,
+				};
+
+				await api.patch(
+					`/api/complaints/${selectedComplaint.id}/`,
+					updateData,
+				);
+			}
 
 			// if (editFormData.feedback) {
 			// 	await api.post(
