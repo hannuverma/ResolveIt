@@ -101,7 +101,7 @@ class departmentSerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        fields = ['id', 'complaint', 'rating', 'review_text']
+        fields = ['id', 'complaint', 'rating', 'review_text', 'image']
         read_only_fields = ['id', 'complaint']
 
 
@@ -109,6 +109,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
     # Expose only the department's name (no user/email/code)
     assigned_department = serializers.CharField(source='assigned_department.name', read_only=True)
     image = serializers.ImageField(max_length=None, use_url=True)
+    resolved_image = serializers.ImageField(max_length=None, use_url=True, required=False)
     feedback = FeedbackSerializer(read_only=True)
     # Only expose `roll_no` to admins or the complaint owner; hide for department staff
     roll_no = serializers.SerializerMethodField()
@@ -142,7 +143,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Complaint
-        fields = ['id', 'student', 'image', 'description', 'assigned_department',
+        fields = ['id', 'student', 'image', 'resolved_image', 'description', 'assigned_department',
                   'status', 'created_at', 'resolved_at', 'priority', 'title', 'feedback', 'roll_no','group_average_rating',]
         read_only_fields = ['id', 'student', 'created_at']
 
