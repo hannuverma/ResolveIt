@@ -5,11 +5,11 @@ from django.db.models import Avg
 
 class alertSerializer(serializers.ModelSerializer):
     created_at_formatted = serializers.SerializerMethodField()
-    estimated_resolution_time_formatted = serializers.SerializerMethodField()
+    resolution_time_formatted = serializers.SerializerMethodField()
 
     class Meta:
         model = AlertMessage
-        fields = ['id', 'college', 'message', 'created_at', 'estimated_resolution_time', 'created_at_formatted', 'estimated_resolution_time_formatted']
+        fields = ['id', 'college', 'message', 'created_at', 'resolution_days', 'resolution_hours', 'created_at_formatted', 'resolution_time_formatted']
         read_only_fields = ['id', 'created_at']
 
     def get_created_at_formatted(self, obj):
@@ -17,10 +17,18 @@ class alertSerializer(serializers.ModelSerializer):
             return obj.created_at.strftime('%B %d, %Y at %I:%M %p')
         return None
 
-    def get_estimated_resolution_time_formatted(self, obj):
-        if obj.estimated_resolution_time:
-            return obj.estimated_resolution_time.strftime('%B %d, %Y at %I:%M %p')
-        return None
+    def get_resolution_time_formatted(self, obj):
+        """Format resolution time as readable text"""
+        parts = []
+        if obj.resolution_days > 0:
+            parts.append(f"{obj.resolution_days} day{'s' if obj.resolution_days != 1 else ''}")
+        if obj.resolution_hours > 0:
+            parts.append(f"{obj.resolution_hours} hour{'s' if obj.resolution_hours != 1 else ''}")
+        
+        if not parts:
+            return "Immediate"
+        
+        return " and ".join(parts)
 
 class StudentGridSerializer(serializers.ModelSerializer):
     class Meta:

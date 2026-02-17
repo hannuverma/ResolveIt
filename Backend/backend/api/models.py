@@ -65,7 +65,8 @@ class AlertMessage(models.Model):
     college = models.ForeignKey(College, on_delete=models.CASCADE, related_name='alerts')
     message = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    estimated_resolution_time = models.DateTimeField(null=True, blank=True)
+    resolution_days = models.IntegerField(default=0, help_text="Number of days until resolution")
+    resolution_hours = models.IntegerField(default=0, help_text="Additional hours (0-23)")
 
     def __str__(self):
         return f"Alert for {self.college.name} at {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"

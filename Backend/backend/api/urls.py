@@ -13,4 +13,5 @@ urlpatterns = [
     path('admin/removedepartments/<str:identifier>/', views.removeDepartment, name='remove-department'),
     path('admin/getdepartments/', views.getAllDepartments, name='get-departments'),
     path('admin/createalert/', views.createAlert, name='create-alert'),
+    path('admin/removealert/<int:alert_id>/', views.removeAlert, name='remove-alert'),
 ]
