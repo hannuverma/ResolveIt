@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from "../utils/api";
 
-
-const ComplaintsView = ({setShowFeedbackModal, setSelectedComplaint, complaints, loading, setComplaints}) => {
-
+const ComplaintsView = ({
+	setShowFeedbackModal,
+	setSelectedComplaint,
+	complaints,
+	loading,
+	setComplaints,
+}) => {
 	const openFeedbackModal = (complaint) => {
 		setSelectedComplaint(complaint);
 		setShowFeedbackModal(true);
@@ -183,13 +187,9 @@ const ComplaintsView = ({setShowFeedbackModal, setSelectedComplaint, complaints,
 									<p className='text-sm text-green-700 font-medium mb-1'>
 										Your Feedback
 									</p>
-									{complaint.feedback.image && (
-										<img
-											src={complaint.feedback.image}
-											alt='Feedback Image'
-											className='h-24 rounded-lg object-cover mt-2'
-										/>
-									)}
+									<p className='text-gray-700'>
+										{complaint.feedback.review_text}
+									</p>
 									<p className='text-xs text-gray-500 mt-2'>
 										Rating: {complaint.feedback.rating}
 										/5 ⭐
