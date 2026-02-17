@@ -4,11 +4,14 @@ const EditComplaintModal = ({
 	complaint,
 	formData,
 	onFormChange,
+	handleImageChange,
+	setFormData,
 	onSave,
 	onClose,
 	loading,
 }) => {
 	if (!complaint) return null;
+
 
 	return (
 		<div className='fixed inset-0 bg-black/30 flex items-center justify-center p-4 z-50'>
@@ -40,27 +43,90 @@ const EditComplaintModal = ({
 						</select>
 					</div>
 
-					{/* Feedback Field */}
+					{/* Image Upload (Optional) */}
 					<div>
 						<label
-							htmlFor='feedback'
+							htmlFor='image'
 							className='block text-sm font-semibold text-gray-700 mb-2'
 						>
-							Department Response/Feedback
+							Upload Image{" "}
 						</label>
-						<textarea
-							id='feedback'
-							name='feedback'
-							value={formData.feedback}
-							onChange={onFormChange}
-							placeholder='Provide feedback or response to the complaint...'
-							rows='5'
-							className='w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none text-black'
-							maxLength={1000}
-						/>
-						<p className='text-xs text-gray-500 mt-1'>
-							{formData.feedback.length}/1000 characters
-						</p>
+						<div className='border-2 border-dashed border-green-300 rounded-lg p-6 text-center hover:bg-green-50 transition-colors'>
+							{formData.imagePreview ? (
+								<div className='space-y-4'>
+									<img
+										src={formData.imagePreview}
+										alt='Preview'
+										className='h-32 mx-auto rounded-lg object-cover'
+									/>
+									<button
+										type='button'
+										onClick={() =>
+											setFormData((prev) => ({
+												...prev,
+												resolved_image: null,
+												imagePreview: null,
+											}))
+										}
+										className='text-sm text-red-600 hover:text-red-700 font-medium'
+									>
+										Remove Image
+									</button>
+								</div>
+							) : (
+								<div>
+									<svg
+										className='mx-auto h-12 w-12 text-green-500 mb-2'
+										fill='none'
+										stroke='currentColor'
+										viewBox='0 0 24 24'
+									>
+										<path
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											strokeWidth={1.5}
+											d='M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'
+										/>
+									</svg>
+									<p className='text-gray-600 font-medium mb-1'>
+										Drag and drop your image here
+									</p>
+									<p className='text-gray-400 text-sm mb-3'>
+										or click to browse
+									</p>
+									<input
+										type='file'
+										id='cameraInput'
+										accept='image/*'
+										capture='environment'
+										className='hidden'
+										onChange={handleImageChange}
+									/>
+									<input
+										type='file'
+										id='galleryInput'
+										accept='image/*'
+										className='hidden'
+										onChange={handleImageChange}
+									/>
+
+									<div className='flex gap-3 justify-center'>
+										<label
+											htmlFor='cameraInput'
+											className='px-4 py-2 bg-green-600 text-white rounded-lg cursor-pointer active:scale-95 transition-transform'
+										>
+											📷 Take Photo
+										</label>
+										<label
+											htmlFor='galleryInput'
+											className='px-4 py-2 bg-gray-600 text-white rounded-lg cursor-pointer active:scale-95 transition-transform'
+										>
+											🖼 Gallery
+										</label>
+									</div>
+								</div>
+							)}
+						</div>
 					</div>
 
 					{/* Original Details */}

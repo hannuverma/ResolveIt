@@ -7,9 +7,11 @@ import EditComplaintModal from "../components/EditComplaintModal";
 import DepartmentFooter from "../components/DepartmentFooter";
 import DepartmentLeaderboard from "../components/admin/DepartmentLeaderboard";
 import AdminFormCard from "../components/admin/AdminFormCard";
+import { useNavigate } from "react-router-dom";
 
 const DepartmentDashboard = () => {
 	const [complaints, setComplaints] = useState([]);
+	const navigate = useNavigate();
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState("");
@@ -17,9 +19,21 @@ const DepartmentDashboard = () => {
 	const [selectedComplaint, setSelectedComplaint] = useState(null);
 	const [editFormData, setEditFormData] = useState({
 		status: "",
-		priority: "",
 		feedback: "",
+		resolved_image: null,
+		imagePreview: null,
 	});
+
+	const handleImageChange = (e) => {
+		const file = e.target.files[0];
+		if (file) {
+			setEditFormData((prev) => ({
+				...prev,
+				resolved_image: file,
+				imagePreview: URL.createObjectURL(file),
+			}));
+		}
+	};
 	const [activeTab, setActiveTab] = useState("complaints");
 
 	const deptProfile = localStorage.getItem("userProfile")
@@ -63,8 +77,9 @@ const DepartmentDashboard = () => {
 		setSelectedComplaint(complaint);
 		setEditFormData({
 			status: complaint.status || "pending",
-			priority: complaint.priority || "medium",
 			feedback: complaint.feedback?.comment || "",
+			image: null,
+			imagePreview: complaint.image || null,
 		});
 		setShowEditModal(true);
 		setError("");
@@ -218,6 +233,8 @@ const DepartmentDashboard = () => {
 								complaint={selectedComplaint}
 								formData={editFormData}
 								onFormChange={handleEditChange}
+								handleImageChange={handleImageChange}
+								setFormData={setEditFormData}
 								onSave={handleSaveEdit}
 								onClose={() => setShowEditModal(false)}
 								loading={loading}
