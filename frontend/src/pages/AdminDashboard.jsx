@@ -35,7 +35,8 @@ const AdminDashboard = () => {
 	});
 	const [createAlertData, setCreateAlertData] = useState({
 		message: "",
-		estimated_resolution_time: "",
+		resolution_days: 0,
+		resolution_hours: 0,
 	});
 
 	const [departments, setDepartments] = useState([]);
@@ -152,7 +153,8 @@ const AdminDashboard = () => {
 			await api.post("/api/admin/createalert/", createAlertData);
 			setCreateAlertData({
 				message: "",
-				estimated_resolution_time: "",
+				resolution_days: 0,
+				resolution_hours: 0,
 			});
 			setSuccess("Alert created successfully.");
 		} catch (error) {

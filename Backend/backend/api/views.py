@@ -440,30 +440,41 @@ class ComplaintViewSet(viewsets.ModelViewSet):
 def createAlert(request):
     if request.method == 'POST':
         message = request.data.get('message')
-        estimated_resolution_time = request.data.get('estimated_resolution_time')
-
-        if estimated_resolution_time in ("", None):
-            estimated_resolution_time = None
-        else:
-            parsed_time = parse_datetime(str(estimated_resolution_time))
-            if not parsed_time:
-                return Response(
-                    {"error": "Invalid estimated_resolution_time. Use ISO 8601 like 2026-02-16T10:30:00Z."},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            if timezone.is_naive(parsed_time):
-                parsed_time = timezone.make_aware(parsed_time, timezone.get_current_timezone())
-            estimated_resolution_time = parsed_time
+        resolution_days = request.data.get('resolution_days', 0)
+        resolution_hours = request.data.get('resolution_hours', 0)
 
         if not request.user.college or not message:
             return Response({"error": "Both 'college' and 'message' are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         if request.user.role != 'ADMIN':
             return Response({"error": "Only admins can create alerts"}, status=status.HTTP_403_FORBIDDEN)
+        
+        # Validate resolution_days and resolution_hours
+        try:
+            resolution_days = int(resolution_days) if resolution_days else 0
+            resolution_hours = int(resolution_hours) if resolution_hours else 0
+        except (ValueError, TypeError):
+            return Response(
+                {"error": "resolution_days and resolution_hours must be integers"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        if resolution_days < 0 or resolution_days > 365:
+            return Response(
+                {"error": "resolution_days must be between 0 and 365"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if resolution_hours < 0 or resolution_hours > 23:
+            return Response(
+                {"error": "resolution_hours must be between 0 and 23"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
         AlertMessage.objects.create(
             college=request.user.college,
             message=message,
-            estimated_resolution_time=estimated_resolution_time,
+            resolution_days=resolution_days,
+            resolution_hours=resolution_hours,
         )
         return Response({"message": "Alert created successfully"}, status=status.HTTP_201_CREATED)
     
@@ -472,6 +483,19 @@ def createAlert(request):
         alerts = AlertMessage.objects.filter(college=request.user.college).order_by('-created_at')
         serializer = alertSerializer(alerts, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+@api_view(['DELETE'])
+def removeAlert(request, alert_id):
+    try:
+        alert = AlertMessage.objects.get(id=alert_id, college=request.user.college)
+    except AlertMessage.DoesNotExist:
+        return Response({"error": "Alert not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    if request.user.role != 'ADMIN':
+        return Response({"error": "Only admins can remove alerts"}, status=status.HTTP_403_FORBIDDEN)
+
+    alert.delete()
+    return Response({"message": "Alert removed successfully"}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
