@@ -21,6 +21,8 @@ import cloudinary.uploader
 import cloudinary.api
 
 
+from urllib.parse import urlparse, parse_qsl
+
 # The URL prefix for media files
 
 
@@ -133,16 +135,30 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # }
 
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
+#         "NAME": os.getenv("DB_NAME", os.getenv("POSTGRES_DB", "postgres")),
+#         "USER": os.getenv("DB_USER", os.getenv("POSTGRES_USER", "postgres.skocgaosaosdsnhztocx")),
+#         "PASSWORD": os.getenv("DB_PASSWORD", os.getenv("POSTGRES_PASSWORD", "ResolveIt@312")),
+#         "HOST": os.getenv("DB_HOST", os.getenv("POSTGRES_HOST", "aws-1-ap-northeast-1.pooler.supabase.com")),
+#         "PORT": os.getenv("DB_PORT", os.getenv("POSTGRES_PORT", "6543")),
+#         # optional pooling settings
+#         "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "0")),
+#     }
+# }
+
+tmpPostgres = urlparse("postgresql://neondb_owner:npg_yo3VOtm0BlUM@ep-divine-wave-a1488d3q-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require")
+
 DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.postgresql"),
-        "NAME": os.getenv("DB_NAME", os.getenv("POSTGRES_DB", "postgres")),
-        "USER": os.getenv("DB_USER", os.getenv("POSTGRES_USER", "postgres.skocgaosaosdsnhztocx")),
-        "PASSWORD": os.getenv("DB_PASSWORD", os.getenv("POSTGRES_PASSWORD", "ResolveIt@312")),
-        "HOST": os.getenv("DB_HOST", os.getenv("POSTGRES_HOST", "aws-1-ap-northeast-1.pooler.supabase.com")),
-        "PORT": os.getenv("DB_PORT", os.getenv("POSTGRES_PORT", "6543")),
-        # optional pooling settings
-        "CONN_MAX_AGE": int(os.getenv("DB_CONN_MAX_AGE", "0")),
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': tmpPostgres.path.replace('/', ''),
+        'USER': tmpPostgres.username,
+        'PASSWORD': tmpPostgres.password,
+        'HOST': tmpPostgres.hostname,
+        'PORT': 5432,
+        'OPTIONS': dict(parse_qsl(tmpPostgres.query)),
     }
 }
 
